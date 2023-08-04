@@ -1,0 +1,4 @@
+postgres-data/
+.mypy_cache
+.venv
+.git
