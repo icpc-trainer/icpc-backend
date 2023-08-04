@@ -37,7 +37,6 @@ HELP_FUN = \
 env:  ##@Environment Create .env file with variables
 	@$(eval SHELL:=/bin/bash)
 	@cp .env_example .env
-	@echo "SECRET_KEY=$$(openssl rand -hex 32)" >> .env
 
 help: ##@Help Show this help
 	@echo -e "Usage: make [target] ...\n"
