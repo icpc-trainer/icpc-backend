@@ -22,6 +22,9 @@ class DefaultSettings(BaseSettings):
     POSTGRES_PORT: int = int(environ.get("POSTGRES_PORT", 5432))
     POSTGRES_PASSWORD: str = environ.get("POSTGRES_PASSWORD", "changeme")
 
+    REDIS_HOST: str = environ.get("REDIS_HOST", "redis")
+    REDIS_PORT: str = environ.get("REDIS_PORT", "6379")
+
     @property
     def database_settings(self) -> dict:
         """
