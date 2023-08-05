@@ -1,10 +1,9 @@
 import json
-from typing import Annotated
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 
 from app.db.enums import MessageType
-from app.services import ConnectionManager
+from app.services import lobby_manager as manager
 
 
 router = APIRouter(
@@ -16,9 +15,8 @@ router = APIRouter(
 @router.websocket("/lobby")
 async def lobby(
     websocket: WebSocket,
-    manager: Annotated[ConnectionManager, Depends(ConnectionManager)],
     team_id: int,
-    user_id: int,
+    user_id: str,
 ):
     await manager.connect(websocket, team_id)
 
