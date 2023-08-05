@@ -16,7 +16,7 @@ class DefaultSettings(BaseSettings):
 
     LOG_FILE: str = environ.get("LOG_FILE", "operations.log")
 
-    POSTGRES_DB: str = environ.get("POSTGRES_DB", "chat")
+    POSTGRES_DB: str = environ.get("POSTGRES_DB", "icpc_db")
     POSTGRES_HOST: str = environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_USER: str = environ.get("POSTGRES_USER", "postgres")
     POSTGRES_PORT: int = int(environ.get("POSTGRES_PORT", 5432))
