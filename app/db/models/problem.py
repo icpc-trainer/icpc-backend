@@ -1,7 +1,6 @@
 from .base import BaseTable
 
-from sqlalchemy import ForeignKey
-from sqlalchemy.dialects.postgresql import UUID, VARCHAR
+from sqlalchemy import ForeignKey, UUID, TEXT, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 
@@ -9,7 +8,7 @@ class Problem(BaseTable):
     __tablename__ = "problems"
 
     external_id: Mapped[str] = mapped_column(
-        VARCHAR,
+        String(255),
         unique=True,
         doc="Unique external index of element",
     )
@@ -18,7 +17,7 @@ class Problem(BaseTable):
         ForeignKey("contests.id"),
     )
     content: Mapped[str] = mapped_column(
-        VARCHAR,
+        TEXT,
         doc="Problem description"
     )
 

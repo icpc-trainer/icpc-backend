@@ -1,8 +1,7 @@
 from .base import BaseTable
 from app.db.enums import TrainingStatusEnum
 
-from sqlalchemy import ForeignKey
-from sqlalchemy.dialects.postgresql import UUID, ENUM
+from sqlalchemy import ForeignKey, UUID, Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
 
@@ -18,6 +17,6 @@ class ContestTraining(BaseTable):
         ForeignKey("teams.id"),
     )
     status: Mapped[TrainingStatusEnum] = mapped_column(
-        ENUM(TrainingStatusEnum),
+        Enum(TrainingStatusEnum),
         default=TrainingStatusEnum.IN_PROCESS,
     )

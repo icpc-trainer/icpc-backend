@@ -20,7 +20,7 @@ class DefaultSettings(BaseSettings):
     POSTGRES_HOST: str = environ.get("POSTGRES_HOST", "localhost")
     POSTGRES_USER: str = environ.get("POSTGRES_USER", "postgres")
     POSTGRES_PORT: int = int(environ.get("POSTGRES_PORT", 5432))
-    POSTGRES_PASSWORD: str = environ.get("POSTGRES_PASSWORD", "changeme")
+    POSTGRES_PASSWORD: str = environ.get("POSTGRES_PASSWORD", "postgres")
 
     @property
     def database_settings(self) -> dict:
