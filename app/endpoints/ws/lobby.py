@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.websocket("/lobby/")
+@router.websocket("/lobby")
 async def lobby(
     websocket: WebSocket,
     manager: Annotated[ConnectionManager, Depends(ConnectionManager)],

@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.websocket("/training/")
+@router.websocket("/training")
 async def training(
     websocket: WebSocket,
     manager: Annotated[ConnectionManager, Depends(ConnectionManager)],
