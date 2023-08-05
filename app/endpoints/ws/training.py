@@ -2,7 +2,7 @@ import json
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 
-from app.db.enums import MessageType
+from app.db.enums import MessageTypeEnum
 from app.services import training_manager as manager
 
 
@@ -24,7 +24,7 @@ async def training(
     await manager.connect(websocket, store_key)
 
     message = {
-        "type": MessageType.USER_JOIN,
+        "type": MessageTypeEnum.USER_JOIN,
         "data": {"userId": user_id},
     }
 
@@ -38,7 +38,7 @@ async def training(
     except WebSocketDisconnect:
         manager.disconnect(websocket, store_key)
         message = {
-            "type": MessageType.USER_LEAVE,
+            "type": MessageTypeEnum.USER_LEAVE,
             "data": {"userId": user_id},
         }
         await manager.broadcast(json.dumps(message), store_key)

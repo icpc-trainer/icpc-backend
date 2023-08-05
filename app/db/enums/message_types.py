@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class MessageType(str, Enum):
-    USER_JOIN = "userJoin"
-    USER_LEAVE = "userLeave"
+class MessageTypeEnum(str, Enum):
+    USER_JOIN = "USER_JOIN"
+    USER_LEAVE = "USER_LEAVE"

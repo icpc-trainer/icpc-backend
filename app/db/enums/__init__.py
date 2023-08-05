@@ -1,6 +1,6 @@
-from .message_types import MessageType
+from .message_types import MessageTypeEnum
 
 
 __all__ = [
-    "MessageType",
+    "MessageTypeEnum",
 ]
