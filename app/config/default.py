@@ -14,7 +14,7 @@ class DefaultSettings(BaseSettings):
     APP_HOST: str = environ.get("APP_HOST", "127.0.0.1")
     APP_PORT: int = int(environ.get("APP_PORT", 8000))
 
-    CONTEST_API_URL: str = environ.get("CONTEST_API_URL", "api.contest.yandex.net/api/public/v2")
+    CONTEST_API_URL: str = environ.get("CONTEST_API_URL", "https://api.contest.yandex.net/api/public/v2")
 
     LOG_FILE: str = environ.get("LOG_FILE", "operations.log")
 
