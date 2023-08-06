@@ -1,13 +1,7 @@
-from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends
 from starlette import status
 
-from app.db.connection import get_session
-from app.schemas import PingResponse
-from app.services import ContestApiManager
-from app.utils.health_check import health_check_db
+from app.services import ProxyManager
 
 
 router = APIRouter(
@@ -22,7 +16,7 @@ router = APIRouter(
 )
 async def get_my_standings(
     contest_id: int,
-    contest_api_manager: Annotated[ContestApiManager, Depends(ContestApiManager)],
+    proxy_manager: ProxyManager = Depends(ProxyManager),
 ) -> dict:
-    result = await contest_api_manager.get_my_standing(contest_id)
+    result = await proxy_manager.get_my_standing(contest_id)
     return result
