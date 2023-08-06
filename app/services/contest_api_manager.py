@@ -43,6 +43,18 @@ class ContestApiManager:
             else:
                 return {}, response.status_code
 
+    async def get_problem_statement(self, contest_id: int, alias: str) -> tuple[bytes, int]:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                url=f"{self.get_url()}/contests/{contest_id}/problems/{alias}/statement",
+                headers={"Authorization": self.authorization},
+            )
+            status_code = response.status_code
+            if status_code == 200:
+                return response.content, response.status_code
+            else:
+                return {}, response.status_code
+
     async def submit_solution(
             self,
             contest_id: int,
