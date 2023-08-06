@@ -1,7 +1,9 @@
-from .base import BaseTable
+from sqlalchemy import TEXT, UUID, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from sqlalchemy import ForeignKey, UUID, TEXT
-from sqlalchemy.orm import Mapped, mapped_column
+from .base import BaseTable
+from .contest_training import ContestTraining
+from .problem import Problem
 
 
 class Submission(BaseTable):
@@ -19,5 +21,5 @@ class Submission(BaseTable):
         TEXT,
     )
 
-
-
+    problem: Mapped[Problem] = relationship(backref="submissions")
+    contest_training: Mapped[ContestTraining] = relationship(backref="submissions")

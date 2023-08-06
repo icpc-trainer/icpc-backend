@@ -1,7 +1,7 @@
-from .base import BaseTable
-
-from sqlalchemy import String 
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
+
+from .base import BaseTable
 
 
 class User(BaseTable):
@@ -15,7 +15,7 @@ class User(BaseTable):
     login: Mapped[str] = mapped_column(
         String(255),
         unique=True,
-        doc="User's unique username"
+        doc="User's unique username",
     )
     first_name: Mapped[str] = mapped_column(
         String(255),

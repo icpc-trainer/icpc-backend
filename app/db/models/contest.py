@@ -1,7 +1,7 @@
-from .base import BaseTable
-
-from sqlalchemy import String 
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
+
+from .base import BaseTable
 
 
 class Contest(BaseTable):
@@ -14,8 +14,5 @@ class Contest(BaseTable):
     )
     name: Mapped[str] = mapped_column(
         String(255),
-        doc="Contest name"
+        doc="Contest name",
     )
-
-
-
