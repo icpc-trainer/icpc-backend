@@ -29,9 +29,9 @@ async def lobby(
 
     try:
         while True:
-            msg = await websocket.receive_json()
+            msg = await websocket.receive_text()
 
-            await manager.broadcast(json.dumps(msg), team_id)
+            await manager.broadcast(msg, team_id)
     except WebSocketDisconnect:
         manager.disconnect(websocket, team_id)
         message = {
