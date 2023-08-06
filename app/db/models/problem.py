@@ -1,7 +1,8 @@
-from .base import BaseTable
+from sqlalchemy import TEXT, UUID, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from sqlalchemy import ForeignKey, UUID, TEXT, String
-from sqlalchemy.orm import Mapped, mapped_column
+from .base import BaseTable
+from .contest import Contest
 
 
 class Problem(BaseTable):
@@ -18,7 +19,7 @@ class Problem(BaseTable):
     )
     content: Mapped[str] = mapped_column(
         TEXT,
-        doc="Problem description"
+        doc="Problem description",
     )
 
-
+    contest: Mapped[Contest] = relationship(backref="contest_trainings")

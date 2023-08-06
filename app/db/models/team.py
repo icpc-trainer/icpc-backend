@@ -1,7 +1,16 @@
-from .base import BaseTable
+from sqlalchemy import Column, ForeignKey, String, Table
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from sqlalchemy import Table, Column, ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column
+from .base import BaseTable
+from .user import User
+
+
+user_team = Table(
+    "user_teams",
+    BaseTable.metadata,
+    Column("user_id", ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
+    Column("team_id", ForeignKey("teams.id", ondelete="CASCADE"), primary_key=True),
+)
 
 
 class Team(BaseTable):
@@ -14,13 +23,7 @@ class Team(BaseTable):
     )
     name: Mapped[str] = mapped_column(
         String(255),
-        doc="Team name"
+        doc="Team name",
     )
 
-
-user_team = Table(
-    "user_teams",
-    BaseTable.metadata,
-    Column("user_id", ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
-    Column("team_id", ForeignKey("teams.id", ondelete="CASCADE"), primary_key=True),
-)
+    users: Mapped[User] = relationship(secondary=user_team, backref="teams")
