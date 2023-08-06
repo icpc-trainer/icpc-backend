@@ -1,8 +1,10 @@
-from .base import BaseTable
-from app.db.enums import TrainingStatusEnum
+from sqlalchemy import UUID, Enum, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from sqlalchemy import ForeignKey, UUID, Enum
-from sqlalchemy.orm import Mapped, mapped_column
+from .base import BaseTable
+from .contest import Contest
+from .team import Team
+from app.db.enums import TrainingStatusEnum
 
 
 class ContestTraining(BaseTable):
@@ -20,3 +22,6 @@ class ContestTraining(BaseTable):
         Enum(TrainingStatusEnum),
         default=TrainingStatusEnum.IN_PROCESS,
     )
+
+    contest: Mapped[Contest] = relationship(backref="contest_trainings")
+    team: Mapped[Team] = relationship(backref="contest_trainings")
