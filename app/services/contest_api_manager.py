@@ -31,7 +31,7 @@ class ContestApiManager:
             else:
                 return {}, response.status_code
 
-    async def get_problems(self, contest_id: int) -> tuple[dict, int]:
+    async def get_contest_problems(self, contest_id: int) -> tuple[dict, int]:
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 url=f"{self.get_url()}/contests/{contest_id}/problems",

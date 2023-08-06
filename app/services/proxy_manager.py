@@ -18,3 +18,14 @@ class ProxyManager:
             return result
         else:
             raise HTTPException(status_code=status_code)
+    
+    async def get_contest_problems(self, contest_id: int) -> dict:
+        result, status_code = await self.contest_api_manager.get_contest_problems(contest_id)
+
+        if status_code == 200:
+            return result
+        else:
+            raise HTTPException(status_code=status_code)
+    
+
+        
