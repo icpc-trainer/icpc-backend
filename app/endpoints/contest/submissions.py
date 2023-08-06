@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, Depends, File, Form
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from starlette import status
 
 from app.services import ProxyManager
@@ -25,6 +25,6 @@ async def submit_solution(
         contest_id,
         problem,
         compiler,
-        file
+        file,
     )
     return result

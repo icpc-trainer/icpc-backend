@@ -53,15 +53,15 @@ class ContestApiManager:
             if status_code == 200:
                 return response.content, response.status_code
             else:
-                return {}, response.status_code
+                return b"", response.status_code
 
     async def submit_solution(
-            self,
-            contest_id: int,
-            problem: str,
-            compiler: str,
-            file: UploadFile
-        ) -> tuple[dict, int]:
+        self,
+        contest_id: int,
+        problem: str,
+        compiler: str,
+        file: UploadFile,
+    ) -> tuple[dict, int]:
         async with httpx.AsyncClient() as client:
             body = {
                 "compiler": compiler,
@@ -71,7 +71,7 @@ class ContestApiManager:
                 url=f"{self.get_url()}/contests/{contest_id}/submissions",
                 headers={"Authorization": self.authorization},
                 data=body,
-                files={"file": (file.filename, file.file, file.content_type)}
+                files={"file": (file.filename, file.file, file.content_type)},
             )
             status_code = response.status_code
             if status_code == 200:
