@@ -32,9 +32,9 @@ async def training(
 
     try:
         while True:
-            msg = await websocket.receive_json()
+            msg = await websocket.receive_text()
 
-            await manager.broadcast(json.dumps(msg), store_key)
+            await manager.broadcast(msg, store_key)
     except WebSocketDisconnect:
         manager.disconnect(websocket, store_key)
         message = {
