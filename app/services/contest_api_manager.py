@@ -1,5 +1,5 @@
 import httpx
-from fastapi import Security
+from fastapi import Security, UploadFile
 from fastapi.security.api_key import APIKeyHeader
 
 from app.config import settings
@@ -36,6 +36,30 @@ class ContestApiManager:
             response = await client.get(
                 url=f"{self.get_url()}/contests/{contest_id}/problems",
                 headers={"Authorization": self.authorization},
+            )
+            status_code = response.status_code
+            if status_code == 200:
+                return response.json(), response.status_code
+            else:
+                return {}, response.status_code
+
+    async def submit_solution(
+            self,
+            contest_id: int,
+            problem: str,
+            compiler: str,
+            file: UploadFile
+        ) -> tuple[dict, int]:
+        async with httpx.AsyncClient() as client:
+            body = {
+                "compiler": compiler,
+                "problem": problem,
+            }
+            response = await client.post(
+                url=f"{self.get_url()}/contests/{contest_id}/submissions",
+                headers={"Authorization": self.authorization},
+                data=body,
+                files={"file": (file.filename, file.file, file.content_type)}
             )
             status_code = response.status_code
             if status_code == 200:
