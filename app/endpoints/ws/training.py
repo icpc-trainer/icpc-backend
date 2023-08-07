@@ -19,26 +19,26 @@ async def training(
     contest_id: int,
     user_id: str,
 ):
-    store_key = f"{team_id}_{contest_id}"
+    group = f"{team_id}_{contest_id}"
 
-    await manager.connect(websocket, store_key)
+    await manager.connect(websocket, group)
 
     message = {
         "type": MessageTypeEnum.USER_JOIN,
         "data": {"userId": user_id},
     }
 
-    await manager.broadcast(json.dumps(message), store_key)
+    await manager.broadcast(group, json.dumps(message))
 
     try:
         while True:
             msg = await websocket.receive_text()
 
-            await manager.broadcast(msg, store_key)
+            await manager.broadcast(group, msg)
     except WebSocketDisconnect:
-        manager.disconnect(websocket, store_key)
+        manager.disconnect(websocket, group)
         message = {
             "type": MessageTypeEnum.USER_LEAVE,
             "data": {"userId": user_id},
         }
-        await manager.broadcast(json.dumps(message), store_key)
+        await manager.broadcast(group, json.dumps(message))
