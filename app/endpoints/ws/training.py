@@ -21,7 +21,10 @@ async def training(
 ):
     group = f"{team_id}_{contest_id}"
 
-    await manager.connect(websocket, group)
+    is_connected = await manager.connect(websocket, group)
+
+    if not is_connected:
+        return
 
     message = {
         "type": MessageTypeEnum.USER_JOIN,
