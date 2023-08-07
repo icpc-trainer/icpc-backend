@@ -1,8 +1,8 @@
-"""initial models
+"""Initial models
 
-Revision ID: 711fa326ed72
+Revision ID: 937734c5250b
 Revises: 
-Create Date: 2023-08-05 17:40:01.152234
+Create Date: 2023-08-07 19:27:28.839356
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '711fa326ed72'
+revision = '937734c5250b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -85,13 +85,13 @@ def upgrade() -> None:
     op.create_table('comments',
     sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('problem_id', sa.UUID(), nullable=False),
-    sa.Column('status', sa.UUID(), nullable=False),
+    sa.Column('contest_training_id', sa.UUID(), nullable=False),
     sa.Column('content', sa.TEXT(), nullable=False),
     sa.Column('id', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('dt_created', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('dt_updated', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
+    sa.ForeignKeyConstraint(['contest_training_id'], ['contest_trainings.id'], name=op.f('fk__comments__contest_training_id__contest_trainings')),
     sa.ForeignKeyConstraint(['problem_id'], ['problems.id'], name=op.f('fk__comments__problem_id__problems')),
-    sa.ForeignKeyConstraint(['status'], ['contest_trainings.id'], name=op.f('fk__comments__status__contest_trainings')),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk__comments__user_id__users')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk__comments')),
     sa.UniqueConstraint('id', name=op.f('uq__comments__id'))
@@ -103,7 +103,7 @@ def upgrade() -> None:
     sa.Column('id', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('dt_created', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
     sa.Column('dt_updated', sa.TIMESTAMP(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=False),
-    sa.ForeignKeyConstraint(['contest_training_id'], ['contests.id'], name=op.f('fk__submissions__contest_training_id__contests')),
+    sa.ForeignKeyConstraint(['contest_training_id'], ['contest_trainings.id'], name=op.f('fk__submissions__contest_training_id__contest_trainings')),
     sa.ForeignKeyConstraint(['problem_id'], ['problems.id'], name=op.f('fk__submissions__problem_id__problems')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk__submissions')),
     sa.UniqueConstraint('id', name=op.f('uq__submissions__id'))
