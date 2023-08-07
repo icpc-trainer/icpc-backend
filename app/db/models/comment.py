@@ -19,7 +19,8 @@ class Comment(BaseTable):
         ForeignKey("problems.id"),
     )
     contest_training_id: Mapped[UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("contest_trainings.id")
+        UUID(as_uuid=True),
+        ForeignKey("contest_trainings.id"),
     )
     content: Mapped[str] = mapped_column(
         TEXT,

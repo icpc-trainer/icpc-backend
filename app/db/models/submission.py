@@ -15,7 +15,7 @@ class Submission(BaseTable):
     )
     contest_training_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey("contests.id"),
+        ForeignKey("contest_trainings.id"),
     )
     content: Mapped[str] = mapped_column(
         TEXT,
