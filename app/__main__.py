@@ -17,10 +17,10 @@ def get_app() -> FastAPI:
     """
     Creates application and all dependable objects.
     """
-    description = "Backend for implementing chat via websockets"
+    description = "Team-programming Backend"
 
     app = FastAPI(
-        title="FastApi-Chat",
+        title="ICPC-Training",
         description=description,
         version="0.1.0",
     )
