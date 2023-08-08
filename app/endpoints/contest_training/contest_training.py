@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, Query
 from starlette import status
 
@@ -12,7 +13,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/{contest_id}",
+    "",
     status_code=status.HTTP_200_OK,
 )
 async def get_contest_training(
@@ -24,5 +25,17 @@ async def get_contest_training(
         contest_external_id,
         team_external_id,
     )
+
+    return ContestTrainingSchema.model_validate(contest_training)
+
+@router.post(
+    "/{contest_training_id}/complete",
+    status_code=status.HTTP_200_OK,
+)
+async def complete_contest_training(
+    contest_training_id: UUID,
+    contest_training_repository: ContestTrainingRepository = Depends(),
+):
+    contest_training = await contest_training_repository.complete_contest_training(contest_training_id)
 
     return ContestTrainingSchema.model_validate(contest_training)

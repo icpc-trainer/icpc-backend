@@ -4,6 +4,7 @@ from sqlalchemy import select
 
 from app.db.connection import get_session
 from app.db.models import ContestTraining, Contest, Team
+from app.db.enums import TrainingStatusEnum
 
 
 class ContestTrainingRepository:
@@ -28,10 +29,10 @@ class ContestTrainingRepository:
         team = team_query.scalar_one_or_none()
 
         if contest is None:
-            raise HTTPException(status_code=404, detail=f"Контест {contest_external_id} не найден")
+            raise HTTPException(status_code=404, detail=f"Контест с id {contest_external_id} не найден")
 
         if team is None:
-            raise HTTPException(status_code=404, detail=f"Команда {team_external_id} не найдена")
+            raise HTTPException(status_code=404, detail=f"Команда с id {team_external_id} не найдена")
 
         contest_training_query = await self.session.execute(
             select(ContestTraining).filter_by(contest_id=contest.id, team_id=team.id)
@@ -44,5 +45,25 @@ class ContestTrainingRepository:
             self.session.add(contest_training)
             await self.session.commit()
             await self.session.refresh(contest_training)
+
+        return contest_training
+
+    async def complete_contest_training(
+        self,
+        contest_training_id: str,
+    ) -> ContestTraining:
+        contest_training_query = await self.session.execute(
+            select(ContestTraining).where(ContestTraining.id==contest_training_id)
+        )
+
+        contest_training = contest_training_query.scalar_one_or_none()
+
+        if contest_training is None:
+            raise HTTPException(status_code=404, detail=f"Тренировка с id {contest_training_id} не найдена")
+
+        contest_training.status = TrainingStatusEnum.FINISHED
+        self.session.add(contest_training)
+        await self.session.commit()
+        await self.session.refresh(contest_training)
 
         return contest_training
