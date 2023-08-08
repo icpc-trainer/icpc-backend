@@ -15,9 +15,9 @@ router = APIRouter(
 @router.websocket("/lobby")
 async def lobby(
     websocket: WebSocket,
-    team_id: int,
+    team_id: str,
     user_id: str,
-):
+) -> None:
     group = team_id
 
     is_connected = await manager.connect(websocket, group)

@@ -1,10 +1,12 @@
+from uuid import UUID
+
 from fastapi import Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.connection import get_session
-from app.db.models import ContestTraining, Contest, Team
 from app.db.enums import TrainingStatusEnum
+from app.db.models import Contest, ContestTraining, Team
 
 
 class ContestTrainingRepository:
@@ -29,10 +31,14 @@ class ContestTrainingRepository:
         team = team_query.scalar_one_or_none()
 
         if contest is None:
-            raise HTTPException(status_code=404, detail=f"Контест с id {contest_external_id} не найден")
+            raise HTTPException(
+                status_code=404, detail=f"Контест с id {contest_external_id} не найден"
+            )
 
         if team is None:
-            raise HTTPException(status_code=404, detail=f"Команда с id {team_external_id} не найдена")
+            raise HTTPException(
+                status_code=404, detail=f"Команда с id {team_external_id} не найдена"
+            )
 
         contest_training_query = await self.session.execute(
             select(ContestTraining).filter_by(contest_id=contest.id, team_id=team.id)
@@ -50,16 +56,18 @@ class ContestTrainingRepository:
 
     async def complete_contest_training(
         self,
-        contest_training_id: str,
+        contest_training_id: UUID,
     ) -> ContestTraining:
         contest_training_query = await self.session.execute(
-            select(ContestTraining).where(ContestTraining.id==contest_training_id)
+            select(ContestTraining).where(ContestTraining.id == contest_training_id)
         )
 
         contest_training = contest_training_query.scalar_one_or_none()
 
         if contest_training is None:
-            raise HTTPException(status_code=404, detail=f"Тренировка с id {contest_training_id} не найдена")
+            raise HTTPException(
+                status_code=404, detail=f"Тренировка с id {contest_training_id} не найдена"
+            )
 
         contest_training.status = TrainingStatusEnum.FINISHED
         self.session.add(contest_training)
