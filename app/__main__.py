@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
 from app.config import settings
@@ -26,6 +27,7 @@ def get_app() -> FastAPI:
     )
     bind_routes(app)
     app.state.settings = settings
+    app.add_middleware(CORSMiddleware, **settings.cors_settings)
     return app
 
 
