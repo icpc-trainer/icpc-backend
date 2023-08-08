@@ -1,8 +1,8 @@
 from .app_health.ping import PingResponse
-from .contest_training.contest_training import ContestTrainingSchema
+from .training.training_session import TrainingSessionSchema
 
 
 __all__ = [
     "PingResponse",
-    "ContestTrainingSchema",
+    "TrainingSessionSchema",
 ]
