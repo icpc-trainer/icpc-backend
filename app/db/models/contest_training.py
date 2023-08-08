@@ -23,5 +23,5 @@ class ContestTraining(BaseTable):
         default=TrainingStatusEnum.IN_PROCESS,
     )
 
-    contest: Mapped[Contest] = relationship(backref="contest_trainings")
-    team: Mapped[Team] = relationship(backref="contest_trainings")
+    contest: Mapped[Contest] = relationship(backref="contest_trainings", lazy="joined")
+    team: Mapped[Team] = relationship(backref="contest_trainings", lazy="joined")
