@@ -7,7 +7,7 @@ from app.services import ProxyManager
 
 router = APIRouter(
     prefix="/contests",
-    tags=["standings"],
+    tags=["problems"],
 )
 
 

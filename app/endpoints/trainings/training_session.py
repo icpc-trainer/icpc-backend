@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 @router.get(
-    "{training_session_id}",
+    "/{training_session_id}",
     status_code=status.HTTP_200_OK,
 )
 async def get_training_session(
