@@ -11,7 +11,7 @@ from app.utils import WebSocketMessage
 
 router = APIRouter(
     prefix="/contests",
-    tags=["standings"],
+    tags=["submission"],
 )
 
 
@@ -59,4 +59,30 @@ async def submit_solution(
         submission_id,
         training_session_id,
     )
+    return result
+
+
+@router.get(
+    "/{contest_id}/submissions/{submission_id}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_submission_short(
+    contest_id: int,
+    submission_id: int,
+    proxy_manager: ProxyManager = Depends(ProxyManager),
+) -> dict:
+    result = await proxy_manager.get_submission_short(contest_id, submission_id)
+    return result
+
+
+@router.get(
+    "/{contest_id}/submissions/{submission_id}/full",
+    status_code=status.HTTP_200_OK,
+)
+async def get_submission_full(
+    contest_id: int,
+    submission_id: int,
+    proxy_manager: ProxyManager = Depends(ProxyManager),
+) -> dict:
+    result = await proxy_manager.get_submission_full(contest_id, submission_id)
     return result
