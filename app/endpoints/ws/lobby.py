@@ -17,9 +17,7 @@ async def lobby(
     team_id: str,
     user_id: str,
 ) -> None:
-    group = team_id
-
-    is_connected = await manager.connect(websocket, group)
+    is_connected = await manager.connect(websocket, team_id)
 
     if not is_connected:
         return
@@ -29,17 +27,17 @@ async def lobby(
         payload={"userId": user_id},
     )
 
-    await manager.broadcast(group, message.json())
+    await manager.broadcast(team_id, message.json())
 
     try:
         while True:
             msg = await websocket.receive_text()
 
-            await manager.broadcast(group, msg)
+            await manager.broadcast(team_id, msg)
     except WebSocketDisconnect:
-        manager.disconnect(websocket, group)
+        manager.disconnect(websocket, team_id)
         message = WebSocketMessage(
             type=MessageTypeEnum.USER_LEAVE,
             payload={"userId": user_id},
         )
-        await manager.broadcast(group, message.json())
+        await manager.broadcast(team_id, message.json())

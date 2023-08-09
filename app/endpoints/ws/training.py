@@ -14,13 +14,10 @@ router = APIRouter(
 @router.websocket("/training")
 async def training(
     websocket: WebSocket,
-    team_id: int,
-    contest_id: int,
+    training_session_id: int,
     user_id: str,
 ):
-    group = f"{team_id}_{contest_id}"
-
-    is_connected = await manager.connect(websocket, group)
+    is_connected = await manager.connect(websocket, training_session_id)
 
     if not is_connected:
         return
@@ -30,17 +27,17 @@ async def training(
         payload={"userId": user_id},
     )
 
-    await manager.broadcast(group, message.json())
+    await manager.broadcast(training_session_id, message.json())
 
     try:
         while True:
             msg = await websocket.receive_text()
 
-            await manager.broadcast(group, msg)
+            await manager.broadcast(training_session_id, msg)
     except WebSocketDisconnect:
-        manager.disconnect(websocket, group)
+        manager.disconnect(websocket, training_session_id)
         message = WebSocketMessage(
             type=MessageTypeEnum.USER_LEAVE,
             payload={"userId": user_id},
         )
-        await manager.broadcast(group, message.json())
+        await manager.broadcast(training_session_id, message.json())
