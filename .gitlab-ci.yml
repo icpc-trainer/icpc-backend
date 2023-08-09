@@ -1,12 +1,8 @@
-image: docker
-
-services:
-  docker:dind
-
 stages:
   - deploy
 
-deploy:
+deploy_production:
+  image: docker:24.0
   stage: deploy
   only:
     - ci_cd
@@ -14,6 +10,6 @@ deploy:
     - echo "Deploying to production..."
     - docker --version
     - docker-compose --version
+    - cp .env_example .env
+    - echo "Here we go" > /txt.txt
     - docker-compose up -d --build
-  tags:
-    - docker
