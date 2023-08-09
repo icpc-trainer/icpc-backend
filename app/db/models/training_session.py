@@ -7,8 +7,8 @@ from .team import Team
 from app.db.enums import TrainingStatusEnum
 
 
-class ContestTraining(BaseTable):
-    __tablename__ = "contest_trainings"
+class TrainingSession(BaseTable):
+    __tablename__ = "training_sessions"
 
     contest_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -23,5 +23,5 @@ class ContestTraining(BaseTable):
         default=TrainingStatusEnum.IN_PROCESS,
     )
 
-    contest: Mapped[Contest] = relationship(backref="contest_trainings", lazy="joined")
-    team: Mapped[Team] = relationship(backref="contest_trainings", lazy="joined")
+    contest: Mapped[Contest] = relationship(backref="training_sessions", lazy="joined")
+    team: Mapped[Team] = relationship(backref="training_sessions", lazy="joined")
