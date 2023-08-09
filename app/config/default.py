@@ -14,7 +14,14 @@ class DefaultSettings(BaseSettings):
     APP_HOST: str = environ.get("APP_HOST", "127.0.0.1")
     APP_PORT: int = int(environ.get("APP_PORT", 8000))
 
-    CONTEST_API_URL: str = environ.get("CONTEST_API_URL", "https://api.contest.yandex.net/api/public/v2")
+    ALLOW_ORIGINS: str = environ.get("ALLOW_ORIGINS", "")
+    ALLOW_CREDENTIALS: bool = environ.get("ALLOW_CREDENTIALS", "False").lower() == "true"
+    ALLOW_METHODS: str = environ.get("ALLOW_METHODS", "")
+    ALLOW_HEADERS: str = environ.get("ALLOW_HEADERS", "")
+
+    CONTEST_API_URL: str = environ.get(
+        "CONTEST_API_URL", "https://api.contest.yandex.net/api/public/v2"
+    )
 
     LOG_FILE: str = environ.get("LOG_FILE", "operations.log")
 
@@ -27,7 +34,16 @@ class DefaultSettings(BaseSettings):
     REDIS_HOST: str = environ.get("REDIS_HOST", "redis")
     REDIS_PORT: str = environ.get("REDIS_PORT", "6379")
 
-    MAX_CONNECTIONS_PER_GROUP: int = environ.get("MAX_CONNECTIONS_PER_GROUP", 3)
+    MAX_CONNECTIONS_PER_GROUP: int = int(environ.get("MAX_CONNECTIONS_PER_GROUP", 3))
+
+    @property
+    def cors_settings(self) -> dict:
+        return {
+            "allow_origins": self.ALLOW_ORIGINS.split(","),
+            "allow_credentials": self.ALLOW_CREDENTIALS,
+            "allow_methods": self.ALLOW_METHODS.split(","),
+            "allow_headers": self.ALLOW_HEADERS.split(","),
+        }
 
     @property
     def database_settings(self) -> dict:
