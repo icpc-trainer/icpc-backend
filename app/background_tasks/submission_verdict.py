@@ -1,4 +1,3 @@
-import json
 import asyncio
 
 from app.services import ContestApiManager, training_manager
@@ -6,8 +5,12 @@ from app.db.enums import MessageTypeEnum
 from app.utils import WebSocketMessage
 
 
-
-async def get_submission_verdict(oauth_token, contest_id, submission_id, training_session_id):
+async def get_submission_verdict(
+    oauth_token: str,
+    contest_id: int,
+    submission_id: int,
+    training_session_id: str,
+) -> None:
     api_manager = ContestApiManager(authorization=oauth_token)
 
     while True:
@@ -23,5 +26,3 @@ async def get_submission_verdict(oauth_token, contest_id, submission_id, trainin
                 await training_manager.broadcast(training_session_id, message.json())
                 return
         await asyncio.sleep(3)
-
-

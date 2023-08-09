@@ -1,4 +1,3 @@
-import json
 from fastapi import APIRouter, Depends, File, Form, UploadFile, Security, BackgroundTasks
 from fastapi.security.api_key import APIKeyHeader
 from starlette import status
@@ -38,7 +37,7 @@ async def submit_solution(
 
     # отправка ответа на задачу в контест апи и получение runId
     result = await proxy_manager.submit_solution(
-        contest_id,
+        int(contest_id),
         problem,
         compiler,
         file,
@@ -47,7 +46,7 @@ async def submit_solution(
     # уведомление об отправке ответа на задачу в websocket каналe
     message = WebSocketMessage(
         type=MessageTypeEnum.SUBMISSION_VERDICT_PENDING,
-        payload={"problem": problem}
+        payload={"problemAlias": problem}
     )
     await training_manager.broadcast(training_session_id, message.json())
 
