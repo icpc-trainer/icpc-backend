@@ -1,9 +1,8 @@
-import json
-
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.db.enums import MessageTypeEnum
 from app.services import lobby_manager as manager
+from app.utils import WebSocketMessage
 
 
 router = APIRouter(
@@ -18,29 +17,27 @@ async def lobby(
     team_id: str,
     user_id: str,
 ) -> None:
-    group = team_id
-
-    is_connected = await manager.connect(websocket, group)
+    is_connected = await manager.connect(websocket, team_id)
 
     if not is_connected:
         return
 
-    message = {
-        "type": MessageTypeEnum.USER_JOIN,
-        "data": {"userId": user_id},
-    }
+    message = WebSocketMessage(
+        type=MessageTypeEnum.USER_JOIN,
+        payload={"userId": user_id},
+    )
 
-    await manager.broadcast(group, json.dumps(message))
+    await manager.broadcast(team_id, message.json())
 
     try:
         while True:
             msg = await websocket.receive_text()
 
-            await manager.broadcast(group, msg)
+            await manager.broadcast(team_id, msg)
     except WebSocketDisconnect:
-        manager.disconnect(websocket, group)
-        message = {
-            "type": MessageTypeEnum.USER_LEAVE,
-            "data": {"userId": user_id},
-        }
-        await manager.broadcast(group, json.dumps(message))
+        manager.disconnect(websocket, team_id)
+        message = WebSocketMessage(
+            type=MessageTypeEnum.USER_LEAVE,
+            payload={"userId": user_id},
+        )
+        await manager.broadcast(team_id, message.json())
