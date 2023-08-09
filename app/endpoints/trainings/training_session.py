@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 from starlette import status
 
 from app.schemas import TrainingSessionSchema
@@ -11,6 +11,21 @@ router = APIRouter(
     prefix="/training-sessions",
     tags=["Training Sessions"],
 )
+
+
+@router.get(
+    "{training_session_id}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_training_session(
+    training_session_id: UUID,
+    training_session_repository: TrainingSessionRepository = Depends(),
+) -> TrainingSessionSchema:
+    training_session = await training_session_repository.get_training_session_by_id(
+        training_session_id,
+    )
+
+    return TrainingSessionSchema.model_validate(training_session)
 
 
 @router.get(

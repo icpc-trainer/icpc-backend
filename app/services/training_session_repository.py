@@ -13,6 +13,17 @@ class TrainingSessionRepository:
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
+    async def get_training_session_by_id(
+        self,
+        training_session_id,
+    ) -> TrainingSession:
+        query = select(TrainingSession).where(TrainingSession.id==training_session_id)
+        training_session = await self.session.scalar(query)
+        if not training_session:
+            raise HTTPException(status_code=404)
+
+        return training_session
+
     async def get_training_session(
         self,
         contest_external_id: str,
