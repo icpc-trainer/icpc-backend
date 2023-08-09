@@ -1,26 +1,37 @@
-from typing import Dict, List
 from fastapi import WebSocket
+from starlette import status
+
+from app.config import settings
 
 
 class ConnectionManager:
-    def __init__(self) -> None:
-        self.active_connections: Dict[str, List[WebSocket]] = {}
+    def __init__(self):
+        self.connections = {}
 
-    async def connect(self, webscoket: WebSocket, key: str):
-        await webscoket.accept()
-        if key in self.active_connections:
-            self.active_connections[key].append(webscoket)
-        else:
-            self.active_connections[key] = [webscoket]
+    async def connect(self, websocket: WebSocket, key: str) -> bool:
+        if key not in self.connections:
+            self.connections[key] = set()
 
-    def disconnect(self, websocket: WebSocket, key: str):
-        if key in self.active_connections:
-            self.active_connections[key].remove(websocket)
+        await websocket.accept()
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
+        if len(self.connections[key]) >= settings.MAX_CONNECTIONS_PER_GROUP:
+            await websocket.close(
+                code=status.WS_1008_POLICY_VIOLATION,
+                reason="Превышен лимит подключений",
+            )
+            return False
+
+        self.connections[key].add(websocket)
+        return True
+
+    def disconnect(self, websocket: WebSocket, key: str) -> None:
+        if key in self.connections:
+            self.connections[key].discard(websocket)
+
+    async def send_message(self, websocket: WebSocket, message: str) -> None:
         await websocket.send_text(message)
 
-    async def broadcast(self, message: str, key: str):
-        if key in self.active_connections:
-            for connection in self.active_connections[key]:
-                await connection.send_text(message)
+    async def broadcast(self, key: str, message: str) -> None:
+        if key in self.connections:
+            for websocket in self.connections[key]:
+                await self.send_message(websocket, message)

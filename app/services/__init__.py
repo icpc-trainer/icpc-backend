@@ -1,7 +1,7 @@
 from .contest_api_manager import ContestApiManager
 from .proxy_manager import ProxyManager
 from .connection_manager import ConnectionManager
-
+from .training_session_repository import TrainingSessionRepository
 
 lobby_manager = ConnectionManager()
 training_manager = ConnectionManager()
@@ -12,4 +12,5 @@ __all__ = [
     "ConnectionManager",
     "lobby_manager",
     "training_manager",
+    "TrainingSessionRepository",
 ]

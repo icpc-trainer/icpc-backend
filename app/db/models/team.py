@@ -26,4 +26,4 @@ class Team(BaseTable):
         doc="Team name",
     )
 
-    users: Mapped[User] = relationship(secondary=user_team, backref="teams")
+    users: Mapped[list[User]] = relationship(secondary=user_team, backref="teams", lazy="subquery")

@@ -22,4 +22,4 @@ class Problem(BaseTable):
         doc="Problem description",
     )
 
-    contest: Mapped[Contest] = relationship(backref="contest_trainings")
+    contest: Mapped[Contest] = relationship(backref="problems", lazy="joined")

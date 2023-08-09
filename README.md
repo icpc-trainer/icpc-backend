@@ -24,6 +24,8 @@ Formal description of the OpenAPI 3.0 interface here [openapi.json](./openapi.js
 ws://localhost:8000/ws/lobby?team_id=12&user_id=1
 ~~~~
 
+Кол-во одновременных соединений ограничено, по дефолту 3.
+При превышении возвращается ошибка с кодом 1008.
 
 
 #### Тренировка
@@ -42,3 +44,5 @@ ws://localhost:8000/ws/lobby?team_id=12&user_id=1
 ws://localhost:8000/ws/training?team_id=12&contest_id=68&user_id=1
 ~~~~
 
+Кол-во одновременных соединений ограничено, по дефолту 3.
+При превышении возвращается ошибка с кодом 1008.

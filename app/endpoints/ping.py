@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from app.db.connection import get_session
 from app.schemas import PingResponse
 from app.utils.health_check import health_check_db
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 router = APIRouter(
