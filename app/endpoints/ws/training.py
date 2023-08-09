@@ -1,9 +1,8 @@
-import json
-
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.db.enums import MessageTypeEnum
 from app.services import training_manager as manager
+from app.utils import WebSocketMessage
 
 
 router = APIRouter(
@@ -26,12 +25,12 @@ async def training(
     if not is_connected:
         return
 
-    message = {
-        "type": MessageTypeEnum.USER_JOIN,
-        "data": {"userId": user_id},
-    }
+    message = WebSocketMessage(
+        type=MessageTypeEnum.USER_JOIN,
+        payload={"userId": user_id},
+    )
 
-    await manager.broadcast(group, json.dumps(message))
+    await manager.broadcast(group, message.json())
 
     try:
         while True:
@@ -40,8 +39,8 @@ async def training(
             await manager.broadcast(group, msg)
     except WebSocketDisconnect:
         manager.disconnect(websocket, group)
-        message = {
-            "type": MessageTypeEnum.USER_LEAVE,
-            "data": {"userId": user_id},
-        }
-        await manager.broadcast(group, json.dumps(message))
+        message = WebSocketMessage(
+            type=MessageTypeEnum.USER_LEAVE,
+            payload={"userId": user_id},
+        )
+        await manager.broadcast(group, message.json())
