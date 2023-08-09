@@ -3,10 +3,11 @@ import asyncio
 
 from app.services import ContestApiManager, training_manager
 from app.db.enums import MessageTypeEnum
+from app.utils import WebSocketMessage
 
 
 
-async def get_submission_verdict(oauth_token, contest_id, submission_id, team_id):
+async def get_submission_verdict(oauth_token, contest_id, submission_id, training_session_id):
     api_manager = ContestApiManager(authorization=oauth_token)
 
     while True:
@@ -14,13 +15,12 @@ async def get_submission_verdict(oauth_token, contest_id, submission_id, team_id
         if status_code == 200:
             verdict = data.get("verdict")
             if verdict != "No report":
-                store_key = f"{team_id}_{contest_id}"
-
-                message = {
-                    "type": MessageTypeEnum.SUBMISSION_VERDICT_RETRIEVED,
-                    "data": data
-                }
-                await training_manager.broadcast(json.dumps(message), store_key)
+                data["id"] = submission_id
+                message = WebSocketMessage(
+                    type=MessageTypeEnum.SUBMISSION_VERDICT_RETRIEVED,
+                    payload=data
+                )
+                await training_manager.broadcast(training_session_id, message.json())
                 return
         await asyncio.sleep(3)
 

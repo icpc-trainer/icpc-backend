@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from app.db.enums import MessageTypeEnum
@@ -14,10 +15,10 @@ router = APIRouter(
 @router.websocket("/training")
 async def training(
     websocket: WebSocket,
-    training_session_id: int,
+    training_session_id: UUID,
     user_id: str,
 ):
-    is_connected = await manager.connect(websocket, training_session_id)
+    is_connected = await manager.connect(websocket, str(training_session_id))
 
     if not is_connected:
         return
@@ -28,7 +29,6 @@ async def training(
     )
 
     await manager.broadcast(training_session_id, message.json())
-
     try:
         while True:
             msg = await websocket.receive_text()

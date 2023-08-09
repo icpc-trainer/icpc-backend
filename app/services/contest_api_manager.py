@@ -87,7 +87,7 @@ class ContestApiManager:
             )
             status_code = response.status_code
             if status_code == 200:
-                return response.content, response.status_code
+                return response.json(), response.status_code
             else:
                 return {}, response.status_code
 
