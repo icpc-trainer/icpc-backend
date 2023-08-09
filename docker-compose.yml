@@ -12,14 +12,12 @@ services:
     ports:
       - "5432:5432"
 
-
   redis:
     container_name: redis
     image: redis
     command: [sh, -c, "redis-server"]
     ports:
       - "6379:6379"
-
 
   backend:
     container_name: "backend"
@@ -30,7 +28,6 @@ services:
       - ./.env
     ports:
       - 8000:8000
-
 
 volumes:
   postgres-data:

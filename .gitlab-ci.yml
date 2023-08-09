@@ -1,0 +1,37 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_IMAGE_NAME: "your-docker-image-name"
+  DOCKER_REGISTRY: "your-docker-registry"
+
+build:
+  stage: build
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - echo "ci worked well!" > /home/student/ci.txt
+    # - docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA .
+    # - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $DOCKER_REGISTRY
+    # - docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA
+    # - docker tag $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_SHA $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest
+    # - docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:latest
+  only:
+    - ci_cd # Only build and push the image when changes are pushed to the master branch
+  except:
+    - tags # Exclude building and pushing for tags
+
+deploy:
+  stage: deploy
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - docker-compose -f docker-compose.yml up -d --build
+  only:
+    - master
+  environment:
+    name: production
+    url: https://your-production-url.com # Replace with the URL of your production environment
