@@ -79,7 +79,7 @@ async def get_submission_short(
     "/{contest_id}/submissions/{submission_id}/full",
     status_code=status.HTTP_200_OK,
 )
-async def get_submission_short(
+async def get_submission_full(
     contest_id: int,
     submission_id: int,
     proxy_manager: ProxyManager = Depends(ProxyManager),
