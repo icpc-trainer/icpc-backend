@@ -1,15 +1,23 @@
+image: docker
+
+services:
+  - docker:dind
+
 stages:
+  - test
   - deploy
 
-deploy_production:
-  image: docker:24.0
+test:
+  stage: test
+  script:
+    - echo "Run tests here"
+
+deploy:
   stage: deploy
   only:
     - ci_cd
   script:
     - echo "Deploying to production..."
-    - docker --version
-    - docker-compose --version
     - cp .env_example .env
-    - echo "Here we go" > /txt.txt
     - docker-compose up -d --build
+  environment: production
