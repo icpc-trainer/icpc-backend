@@ -100,3 +100,22 @@ async def get_submission_full(
 
     result = await proxy_manager.get_submission_full(contest_id, submission_id)
     return result
+
+
+@router.get(
+    "/{training_session_id}/submissions/",
+    status_code=status.HTTP_200_OK,
+)
+async def get_submission_short(
+    training_session_id: str,
+    proxy_manager: ProxyManager = Depends(ProxyManager),
+    training_session_repository: TrainingSessionRepository = Depends(),
+) -> dict:
+    # получение contest_id через training session
+    training_session = await training_session_repository.get_training_session_by_id(
+        training_session_id
+    )
+    contest_id = training_session.contest.external_id
+
+    result = await proxy_manager.get_submissions(contest_id)
+    return result
