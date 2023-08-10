@@ -17,9 +17,8 @@ class Problem(BaseTable):
         UUID(as_uuid=True),
         ForeignKey("contests.id"),
     )
-    content: Mapped[str] = mapped_column(
-        TEXT,
-        doc="Problem description",
+    alias: Mapped[str] = mapped_column(
+        String(1),
     )
 
     contest: Mapped[Contest] = relationship(backref="problems", lazy="joined")
