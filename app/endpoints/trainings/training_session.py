@@ -1,10 +1,10 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, status
 from starlette import status
 
 from app.schemas import TrainingSessionSchema
-from app.services import TrainingSessionRepository
+from app.services import TrainingSessionRepository, redis_storage_manager
 
 
 router = APIRouter(
@@ -58,3 +58,11 @@ async def complete_training_session(
     )
 
     return TrainingSessionSchema.model_validate(training_session)
+
+
+@router.get(
+    "/{training_session_id}/code/{alias}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_code_from_redis(training_session_id: UUID, alias: str):
+    return redis_storage_manager.codesnap.get(training_session_id, alias)
