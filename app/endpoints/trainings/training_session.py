@@ -18,7 +18,7 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
 )
 async def get_training_session(
-    training_session_id: UUID,
+    training_session_id: str,
     training_session_repository: TrainingSessionRepository = Depends(),
 ) -> TrainingSessionSchema:
     training_session = await training_session_repository.get_training_session_by_id(

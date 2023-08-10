@@ -15,7 +15,7 @@ class TrainingSessionRepository:
 
     async def get_training_session_by_id(
         self,
-        training_session_id,
+        training_session_id: str,
     ) -> TrainingSession:
         query = select(TrainingSession).where(TrainingSession.id==training_session_id)
         training_session = await self.session.scalar(query)
