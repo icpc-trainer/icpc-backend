@@ -8,13 +8,13 @@ from app.utils.health_check import health_check_db
 
 
 router = APIRouter(
-    prefix="/health_check",
+    prefix="/health",
     tags=["Application Health"],
 )
 
 
 @router.get(
-    "/ping_application",
+    "/ping-application",
     response_model=PingResponse,
     status_code=status.HTTP_200_OK,
 )
@@ -23,7 +23,7 @@ async def ping_application() -> dict:
 
 
 @router.get(
-    "/ping_database",
+    "/ping-database",
     response_model=PingResponse,
     status_code=status.HTTP_200_OK,
     responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Database isn't working"}},

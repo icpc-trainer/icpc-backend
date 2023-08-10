@@ -7,14 +7,15 @@ services:
     restart: always
     env_file:
       - ./.env
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data/
 
   redis:
     container_name: redis
     image: redis
+    restart: always
     command: [sh, -c, "redis-server"]
     ports:
       - "6379:6379"

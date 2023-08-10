@@ -1,16 +1,31 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 from starlette import status
 
 from app.schemas import TrainingSessionSchema
-from app.services import TrainingSessionRepository
+from app.services import TrainingSessionRepository, redis_storage_manager
 
 
 router = APIRouter(
     prefix="/training-sessions",
     tags=["Training Sessions"],
 )
+
+
+@router.get(
+    "/{training_session_id}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_training_session(
+    training_session_id: UUID,
+    training_session_repository: TrainingSessionRepository = Depends(),
+) -> TrainingSessionSchema:
+    training_session = await training_session_repository.get_training_session_by_id(
+        training_session_id,
+    )
+
+    return TrainingSessionSchema.model_validate(training_session)
 
 
 @router.get(
@@ -43,3 +58,21 @@ async def complete_training_session(
     )
 
     return TrainingSessionSchema.model_validate(training_session)
+
+
+@router.get(
+    "/{training_session_id}/code/{alias}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_code_from_redis(training_session_id: UUID, alias: str) -> dict:
+    code = redis_storage_manager.codesnap.get(training_session_id, alias)
+    return {"code": code}
+
+
+@router.get(
+    "/{training_session_id}/control/current",
+    status_code=status.HTTP_200_OK,
+)
+async def get_current_controller(training_session_id: UUID) -> dict:
+    user_id = redis_storage_manager.controller.get(training_session_id)
+    return {"userId": user_id}

@@ -22,6 +22,9 @@ class DefaultSettings(BaseSettings):
     CONTEST_API_URL: str = environ.get(
         "CONTEST_API_URL", "https://api.contest.yandex.net/api/public/v2"
     )
+    AUTH_API_URL: str = environ.get(
+        "AUTH_API_URL", "https://login.yandex.ru"
+    )
 
     LOG_FILE: str = environ.get("LOG_FILE", "operations.log")
 
@@ -32,7 +35,7 @@ class DefaultSettings(BaseSettings):
     POSTGRES_PASSWORD: str = environ.get("POSTGRES_PASSWORD", "changeme")
 
     REDIS_HOST: str = environ.get("REDIS_HOST", "redis")
-    REDIS_PORT: str = environ.get("REDIS_PORT", "6379")
+    REDIS_PORT: int = int(environ.get("REDIS_PORT", 6379))
 
     MAX_CONNECTIONS_PER_GROUP: int = int(environ.get("MAX_CONNECTIONS_PER_GROUP", 3))
 
