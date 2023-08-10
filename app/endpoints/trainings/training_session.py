@@ -4,7 +4,9 @@ from fastapi import APIRouter, Depends, Query, status
 from starlette import status
 
 from app.schemas import TrainingSessionSchema
-from app.services import TrainingSessionRepository, redis_storage_manager
+from app.services import TrainingSessionRepository, redis_storage_manager, training_manager
+from app.utils import WebSocketMessage
+from app.db.enums import MessageTypeEnum
 
 
 router = APIRouter(
@@ -57,7 +59,16 @@ async def complete_training_session(
         training_session_id
     )
 
-    return TrainingSessionSchema.model_validate(training_session)
+    response = TrainingSessionSchema.model_validate(training_session)
+
+    message = WebSocketMessage(
+        type=MessageTypeEnum.TRAINING_FINISHED,
+        payload=None,
+    )
+
+    await training_manager.broadcast(str(training_session_id), message.json())
+
+    return response
 
 
 @router.get(
