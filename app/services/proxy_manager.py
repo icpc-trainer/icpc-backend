@@ -70,6 +70,15 @@ class ProxyManager:
         else:
             raise HTTPException(status_code=status_code)
 
+    async def get_submissions(self, contest_id: int) -> dict:
+        result, status_code = await self.contest_api_manager.get_submissions(
+            contest_id
+        )
+        if status_code == 200:
+            return result
+        else:
+            raise HTTPException(status_code=status_code)
+
     async def get_me(self) -> dict:
         result, status_code = await self.contest_api_manager.get_me()
         if status_code == 200:
