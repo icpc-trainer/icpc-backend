@@ -1,23 +1,18 @@
-image: docker
-
-services:
-  - docker:dind
-
 stages:
   - test
   - deploy
 
-test:
+pytest:
   stage: test
   script:
-    - echo "Run tests here"
+    - echo "Tests run here..."
 
 deploy:
   stage: deploy
   only:
-    - ci_cd
+    - master
   script:
     - echo "Deploying to production..."
     - cp .env_example .env
-    - docker-compose up -d --build
-  environment: production
+    - docker-compose down
+    - docker-compose up -d
