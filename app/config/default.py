@@ -22,6 +22,9 @@ class DefaultSettings(BaseSettings):
     CONTEST_API_URL: str = environ.get(
         "CONTEST_API_URL", "https://api.contest.yandex.net/api/public/v2"
     )
+    AUTH_API_URL: str = environ.get(
+        "AUTH_API_URL", "https://login.yandex.ru"
+    )
 
     LOG_FILE: str = environ.get("LOG_FILE", "operations.log")
 

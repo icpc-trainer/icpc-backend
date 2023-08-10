@@ -103,7 +103,22 @@ class ContestApiManager:
             else:
                 return {}, response.status_code
 
-
+    async def get_me(self) -> tuple[dict, int]:
+        async with httpx.AsyncClient() as client:
+            params = {
+                "format": "json",
+                "oauth_token": self.authorization.split()[1],
+            }
+            response = await client.get(
+                url=f"{settings.AUTH_API_URL}/info",
+                params=params,
+                headers={"Authorization": self.authorization},
+            )
+            status_code = response.status_code
+            if status_code == 200:
+                return response.json(), response.status_code
+            else:
+                return {}, response.status_code
 
 
 
