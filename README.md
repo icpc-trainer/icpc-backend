@@ -86,3 +86,12 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
     }
 }
 ~~~~
+
+`TRAINING_FINISHED` - отправляется всем когда кто-то нажал кнопку завершения тренировки
+
+~~~~json
+{
+    "type": "TRAINING_FINISHED",
+    "payload": null
+}
+~~~~
