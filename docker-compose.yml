@@ -16,6 +16,7 @@ services:
   redis:
     container_name: redis
     image: redis
+    restart: always
     command: [sh, -c, "redis-server"]
     ports:
       - "6379:6379"
