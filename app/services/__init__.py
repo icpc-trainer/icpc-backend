@@ -3,10 +3,12 @@ from .proxy_manager import ProxyManager
 from .connection_manager import ConnectionManager
 from .training_session_repository import TrainingSessionRepository
 from .user_repository import UserRepository
+from .redis_storage_manager import RedisStorageManager
 
 
 lobby_manager = ConnectionManager()
 training_manager = ConnectionManager()
+redis_storage_manager = RedisStorageManager()
 
 __all__ = [
     "ContestApiManager",
@@ -16,4 +18,5 @@ __all__ = [
     "training_manager",
     "TrainingSessionRepository",
     "UserRepository",
+    "redis_storage_manager",
 ]
