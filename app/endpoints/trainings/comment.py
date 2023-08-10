@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, Form, HTTPException
 from starlette import status
 
@@ -27,10 +28,10 @@ router = APIRouter(
 async def send_problem_comment(
     training_session_id: str,
     problem_alias: str,
-    content: Form(...),
+    content: str = Form(...),
     proxy_manager: ProxyManager = Depends(ProxyManager),
     user_repository: UserRepository = Depends(),
-    training_ression_repository: TrainingSessionRepository = Depends(),
+    training_session_repository: TrainingSessionRepository = Depends(),
     problem_repository: ProblemRepository = Depends(),
     comment_repository: CommentRepository = Depends(),
 ) -> CommentSchema:
@@ -41,14 +42,16 @@ async def send_problem_comment(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     # получение id контеста
-    training_session = await training_ression_repository.get_training_session_by_id(training_session_id)
-    contest_id = training_session.contest_id
+    training_session = await training_session_repository.get_training_session_by_id(training_session_id)
+    contest_id = training_session.contest.id
 
     # получение задачи по contest_id и problem_alias
     problem = await problem_repository.get_problem_by_contest_id_and_alias(
         contest_id=contest_id,
         problem_alias=problem_alias
     )
+    if not problem:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     # создание коммента
     comment = await comment_repository.create_comment(
@@ -62,7 +65,7 @@ async def send_problem_comment(
     message = WebSocketMessage(
         MessageTypeEnum.PROBLEM_COMMENT_RECEIVED,
         {
-            "id": comment.id,
+            "id": str(comment.id),
             "userId": user_data.get("id"),
             "userFirstName": user_data.get("first_name"),
             "userLastName": user_data.get("last_name"),
@@ -71,8 +74,8 @@ async def send_problem_comment(
             "content": content,
         }
     )
-    training_manager.broadcast(training_session_id, message.json())
+    await training_manager.broadcast(training_session_id, message.json())
 
-    return CommentSchema.model_validate_json(message.json())
+    return CommentSchema.model_validate_json(json.dumps(message.payload))
 
 

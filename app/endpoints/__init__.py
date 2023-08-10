@@ -1,5 +1,6 @@
 from .ping import router as ping_router
 from .auth.user import router as user_router
+from .contest.contest import router as contest_router
 from .contest.standings import router as standing_router
 from .contest.problems import router as problems_router
 from .trainings.submissions import router as submission_router
@@ -11,6 +12,7 @@ from .ws.training import router as ws_training_router
 
 list_of_routes = [
     ping_router,
+    contest_router,
     standing_router,
     problems_router,
     submission_router,

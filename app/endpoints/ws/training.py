@@ -30,6 +30,11 @@ async def handle_message(training_session_id, message_data):
             message.payload['problemAlias'],
             message.payload['code'],
         )
+    elif message.type == MessageTypeEnum.CONTROL_TAKEN:
+        redis_storage_manager.controller.set(
+            training_session_id,
+            message.payload['userId'],
+        )
 
 
 @router.websocket("/training")

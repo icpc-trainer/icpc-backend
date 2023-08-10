@@ -10,7 +10,7 @@ class WebSocketMessage:
     payload: dict
 
     def json(self):
-        return json.dumps(self.__dict__)
+        return json.dumps(self.__dict__, ensure_ascii=False)
 
     @staticmethod
     def validate(message_data):
