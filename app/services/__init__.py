@@ -11,7 +11,7 @@ redis_storage_manager = RedisStorageManager()
 
 __all__ = [
     "ContestApiManager",
-    "ProxyManager"
+    "ProxyManager",
     "ConnectionManager",
     "lobby_manager",
     "training_manager",
