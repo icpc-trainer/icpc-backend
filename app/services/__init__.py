@@ -8,7 +8,7 @@ training_manager = ConnectionManager()
 
 __all__ = [
     "ContestApiManager",
-    "ProxyManager"
+    "ProxyManager",
     "ConnectionManager",
     "lobby_manager",
     "training_manager",
