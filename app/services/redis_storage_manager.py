@@ -41,4 +41,4 @@ class RedisStorageManager:
     def __init__(self):
         self.redis_storage = RedisStorage()
         self.codesnap = CodeSnapManager(self.redis_storage)
-        self.controllers = ControllerManager(self.redis_storage)
+        self.controller = ControllerManager(self.redis_storage)

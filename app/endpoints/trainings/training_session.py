@@ -74,5 +74,5 @@ async def get_code_from_redis(training_session_id: UUID, alias: str) -> dict:
     status_code=status.HTTP_200_OK,
 )
 async def get_current_controller(training_session_id: UUID) -> dict:
-    user_id = redis_storage_manager.controllers.get(training_session_id)
+    user_id = redis_storage_manager.controller.get(training_session_id)
     return {"userId": user_id}
