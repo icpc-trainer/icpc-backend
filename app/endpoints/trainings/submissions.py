@@ -10,21 +10,21 @@ from app.utils import WebSocketMessage
 
 
 router = APIRouter(
-    prefix="/contests",
+    prefix="/training-sessions",
     tags=["submission"],
 )
 
 
 @router.post(
-    "/{contest_id}/submissions",
+    "/{training_session_id}/submissions",
     status_code=status.HTTP_200_OK,
 )
 async def submit_solution(
     background_tasks: BackgroundTasks,
+    training_session_id: str,
     file: UploadFile = File(...),
     compiler: str = Form(...),
     problem: str = Form(...),
-    training_session_id: str = Form(...),
     proxy_manager: ProxyManager = Depends(ProxyManager),
     oauth_token: str = Security(APIKeyHeader(name="Authorization")),
     training_session_repository: TrainingSessionRepository = Depends(),
@@ -63,26 +63,40 @@ async def submit_solution(
 
 
 @router.get(
-    "/{contest_id}/submissions/{submission_id}",
+    "/{training_session_id}/submissions/{submission_id}",
     status_code=status.HTTP_200_OK,
 )
 async def get_submission_short(
-    contest_id: int,
+    training_session_id: str,
     submission_id: int,
     proxy_manager: ProxyManager = Depends(ProxyManager),
+    training_session_repository: TrainingSessionRepository = Depends(),
 ) -> dict:
+    # получение contest_id через training session
+    training_session = await training_session_repository.get_training_session_by_id(
+        training_session_id
+    )
+    contest_id = training_session.contest.external_id
+
     result = await proxy_manager.get_submission_short(contest_id, submission_id)
     return result
 
 
 @router.get(
-    "/{contest_id}/submissions/{submission_id}/full",
+    "/{training_session_id}/submissions/{submission_id}/full",
     status_code=status.HTTP_200_OK,
 )
 async def get_submission_full(
-    contest_id: int,
+    training_session_id: str,
     submission_id: int,
     proxy_manager: ProxyManager = Depends(ProxyManager),
+    training_session_repository: TrainingSessionRepository = Depends(),
 ) -> dict:
+    # получение contest_id через training session
+    training_session = await training_session_repository.get_training_session_by_id(
+        training_session_id
+    )
+    contest_id = training_session.contest.external_id
+
     result = await proxy_manager.get_submission_full(contest_id, submission_id)
     return result

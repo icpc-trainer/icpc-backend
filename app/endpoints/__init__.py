@@ -2,7 +2,7 @@ from .ping import router as ping_router
 from .auth.user import router as user_router
 from .contest.standings import router as standing_router
 from .contest.problems import router as problems_router
-from .contest.submissions import router as submission_router
+from .trainings.submissions import router as submission_router
 from .trainings.training_session import router as training_session_router
 from .trainings.comment import router as comment_router
 from .ws.lobby import router as ws_lobby_router
