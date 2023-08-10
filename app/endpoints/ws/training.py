@@ -6,7 +6,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.db.enums import MessageTypeEnum
 from app.services import training_manager as manager
 from app.utils import WebSocketMessage
-from app.services import redis_storage
+from app.services import redis_storage_manager
 
 
 router = APIRouter(
@@ -25,8 +25,11 @@ async def handle_message(training_session_id, message_data):
         return
 
     if message.type == MessageTypeEnum.CODE_EDITOR_UPDATE:
-        key = f"{training_session_id}:{message.payload['problemAlias']}"
-        redis_storage.set_value(key, message.payload['code'])
+        redis_storage_manager.codesnap.set(
+            training_session_id,
+            message.payload['problemAlias'],
+            message.payload['code'],
+        )
 
 
 @router.websocket("/training")

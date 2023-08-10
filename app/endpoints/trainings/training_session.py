@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query, status
 from starlette import status
 
 from app.schemas import TrainingSessionSchema
-from app.services import TrainingSessionRepository, redis_storage
+from app.services import TrainingSessionRepository, redis_storage_manager
 
 
 router = APIRouter(
@@ -65,9 +65,4 @@ async def complete_training_session(
     status_code=status.HTTP_200_OK,
 )
 async def get_code_from_redis(training_session_id: UUID, alias: str):
-    code = redis_storage.get_value(f"{training_session_id}:{alias}")
-
-    if not code:
-        return ""
-
-    return code
+    return redis_storage_manager.codesnap.get(training_session_id, alias)
