@@ -106,7 +106,7 @@ async def get_submission_full(
     "/{training_session_id}/submissions/",
     status_code=status.HTTP_200_OK,
 )
-async def get_submission_short(
+async def get_submissions_all(
     training_session_id: str,
     proxy_manager: ProxyManager = Depends(ProxyManager),
     training_session_repository: TrainingSessionRepository = Depends(),

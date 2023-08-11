@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Form
 from fastapi.responses import StreamingResponse
 from starlette import status
 
-from app.services import ProxyManager, ProblemRepository, ContestRepository
+from app.services import ProxyManager
 
 
 router = APIRouter(
@@ -18,15 +18,8 @@ router = APIRouter(
 async def contest_problems(
     contest_id: int,
     proxy_manager: ProxyManager = Depends(ProxyManager),
-    problem_repository: ProblemRepository = Depends(),
-    contest_repository: ContestRepository = Depends(),
 ) -> dict:
     problems = await proxy_manager.get_contest_problems(contest_id)
-    contest = await contest_repository.get_contest_by_external_id(str(contest_id))
-    for problem in problems.get("problems"):
-        await problem_repository.create_if_not_exists(
-            contest.id, problem
-        )
     return problems
 
 
