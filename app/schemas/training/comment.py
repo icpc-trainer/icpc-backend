@@ -1,6 +1,11 @@
+from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
+
+
+class CommentRequest(BaseModel):
+    content: str
 
 
 class CommentSchema(BaseModel):
@@ -13,5 +18,5 @@ class CommentSchema(BaseModel):
     userLogin: str
     problemAlias: str
     content: str
-
+    dtCreated: datetime
 
