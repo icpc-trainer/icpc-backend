@@ -1,0 +1,18 @@
+stages:
+  - test
+  - deploy
+
+pytest:
+  stage: test
+  script:
+    - echo "Tests run here..."
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  script:
+    - echo "Deploying to production..."
+    - cp .env_example .env
+    - docker-compose down
+    - docker-compose up -d
