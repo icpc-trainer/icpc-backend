@@ -14,5 +14,6 @@ deploy:
   script:
     - echo "Deploying to production..."
     - cp .env_example .env
+    - ./docker-compose.sh prod
     - docker-compose down
-    - docker-compose up -d
+    - docker-compose up --build -d

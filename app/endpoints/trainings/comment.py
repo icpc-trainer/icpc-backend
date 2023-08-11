@@ -1,5 +1,5 @@
 import json
-from fastapi import APIRouter, Depends, Form, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
 from app.services import (
@@ -10,25 +10,25 @@ from app.services import (
     CommentRepository,
     training_manager,
 )
-from app.schemas import CommentSchema
+from app.schemas import CommentSchema, CommentRequest
 from app.utils import WebSocketMessage
 from app.db.enums import MessageTypeEnum
 
 
 router = APIRouter(
-    prefix="/training-session",
+    prefix="/training-sessions",
     tags=["comment"],
 )
 
 
 @router.post(
-    "/{training_session_id}/problem/{problem_alias}/commment/send",
+    "/{training_session_id}/problem/{problem_alias}/comment/send",
     status_code=status.HTTP_200_OK,
 )
 async def send_problem_comment(
     training_session_id: str,
     problem_alias: str,
-    content: str = Form(...),
+    body: CommentRequest,
     proxy_manager: ProxyManager = Depends(ProxyManager),
     user_repository: UserRepository = Depends(),
     training_session_repository: TrainingSessionRepository = Depends(),
@@ -58,7 +58,7 @@ async def send_problem_comment(
         user_id=user.id,
         problem_id=problem.id,
         training_session_id=training_session.id,
-        content=content
+        content=body.content
     )
 
     # отправка коммента по сокету
@@ -71,7 +71,8 @@ async def send_problem_comment(
             "userLastName": user_data.get("last_name"),
             "userLogin": user_data.get("login"),
             "problemAlias": problem_alias,
-            "content": content,
+            "content": body.content,
+            "dtCreated": str(comment.dt_created)
         }
     )
     await training_manager.broadcast(training_session_id, message.json())
