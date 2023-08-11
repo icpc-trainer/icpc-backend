@@ -12,6 +12,10 @@ pydantic-settings = "^2.0.2"
 sqlalchemy = "^2.0.19"
 alembic = "^1.11.1"
 psycopg = "^3.1.9"
+httpx = "^0.24.1"
+websockets = "^11.0.3"
+redis = "^4.6.0"
+python-multipart = "^0.0.6"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -19,6 +23,8 @@ pynvim = "^0.4.3"
 isort = "^5.12.0"
 black = "^23.7.0"
 mypy = "^1.4.1"
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -43,3 +49,14 @@ lines_after_imports = 2
 multi_line_output = 3
 line_length = 100
 include_trailing_comma = true
+
+[tool.pytest]
+addopts = "--cov=app --cov-report html:coverage-report-html --cov-fail-under=60"
+python_files = "test_*.py"
+python_classes = ["*Test", "Test*"]
+python_functions = "test_*"
+testpaths = "tests/"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+norecursedirs = "postgres-data"

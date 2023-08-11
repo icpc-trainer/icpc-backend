@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
 from app.config import settings
@@ -17,15 +18,16 @@ def get_app() -> FastAPI:
     """
     Creates application and all dependable objects.
     """
-    description = "Backend for implementing chat via websockets"
+    description = "Team-programming Backend"
 
     app = FastAPI(
-        title="FastApi-Chat",
+        title="ICPC-Training",
         description=description,
         version="0.1.0",
     )
     bind_routes(app)
     app.state.settings = settings
+    app.add_middleware(CORSMiddleware, **settings.cors_settings)
     return app
 
 
