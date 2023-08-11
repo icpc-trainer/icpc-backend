@@ -1,5 +1,5 @@
 import json
-from fastapi import APIRouter, Depends, Body, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 
 from app.services import (
