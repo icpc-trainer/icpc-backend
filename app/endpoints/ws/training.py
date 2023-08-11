@@ -35,6 +35,11 @@ async def handle_message(training_session_id, message_data):
             training_session_id,
             message.payload['userId'],
         )
+    elif message.type == MessageTypeEnum.USER:
+        redis_storage_manager.training_users.add_user(
+            training_session_id,
+            message.payload["user"],
+        )
 
 
 @router.websocket("/training")
@@ -67,4 +72,5 @@ async def training(
             type=MessageTypeEnum.USER_LEAVE,
             payload={"userId": user_id},
         )
+        redis_storage_manager.training_users.remove_user(training_session_id, user_id)
         await manager.broadcast(str(training_session_id), message.json())
