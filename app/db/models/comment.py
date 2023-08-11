@@ -1,9 +1,8 @@
-from sqlalchemy import TEXT, UUID, ForeignKey
+from sqlalchemy import TEXT, UUID, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable
 from .training_session import TrainingSession
-from .problem import Problem
 from .user import User
 
 
@@ -14,9 +13,8 @@ class Comment(BaseTable):
         UUID(as_uuid=True),
         ForeignKey("users.id"),
     )
-    problem_id: Mapped[UUID] = mapped_column(
-        UUID(as_uuid=True),
-        ForeignKey("problems.id"),
+    problem_alias: Mapped[str] = mapped_column(
+        String(255),
     )
     training_session_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -27,5 +25,4 @@ class Comment(BaseTable):
     )
 
     user: Mapped[User] = relationship(backref="comments", lazy="joined")
-    problem: Mapped[Problem] = relationship(backref="comments", lazy="joined")
     training_session: Mapped[TrainingSession] = relationship(backref="comments", lazy="joined")

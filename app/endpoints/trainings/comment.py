@@ -1,12 +1,12 @@
 import json
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
+from typing import List
 
 from app.services import (
     ProxyManager,
     UserRepository,
     TrainingSessionRepository,
-    ProblemRepository,
     CommentRepository,
     training_manager,
 )
@@ -22,7 +22,7 @@ router = APIRouter(
 
 
 @router.post(
-    "/{training_session_id}/problem/{problem_alias}/comment/send",
+    "/{training_session_id}/problem/{problem_alias}/comments/send",
     status_code=status.HTTP_200_OK,
 )
 async def send_problem_comment(
@@ -32,7 +32,6 @@ async def send_problem_comment(
     proxy_manager: ProxyManager = Depends(ProxyManager),
     user_repository: UserRepository = Depends(),
     training_session_repository: TrainingSessionRepository = Depends(),
-    problem_repository: ProblemRepository = Depends(),
     comment_repository: CommentRepository = Depends(),
 ) -> CommentSchema:
     # получение информации о пользователе
@@ -41,30 +40,21 @@ async def send_problem_comment(
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
-    # получение id контеста
+    # получение id training_session
     training_session = await training_session_repository.get_training_session_by_id(training_session_id)
-    contest_id = training_session.contest.id
-
-    # получение задачи по contest_id и problem_alias
-    problem = await problem_repository.get_problem_by_contest_id_and_alias(
-        contest_id=contest_id,
-        problem_alias=problem_alias
-    )
-    if not problem:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     # создание коммента
     comment = await comment_repository.create_comment(
         user_id=user.id,
-        problem_id=problem.id,
         training_session_id=training_session.id,
+        problem_alias=problem_alias,
         content=body.content
     )
 
     # отправка коммента по сокету
     message = WebSocketMessage(
-        MessageTypeEnum.PROBLEM_COMMENT_RECEIVED,
-        {
+        type = MessageTypeEnum.PROBLEM_COMMENT_RECEIVED,
+        payload = {
             "id": str(comment.id),
             "userId": user_data.get("id"),
             "userFirstName": user_data.get("first_name"),
@@ -80,3 +70,29 @@ async def send_problem_comment(
     return CommentSchema.model_validate_json(json.dumps(message.payload))
 
 
+@router.get(
+    "/{training_session_id}/problem/{problem_alias}/comments/",
+    status_code=status.HTTP_200_OK,
+)
+async def get_problem_comments(
+    training_session_id: str,
+    problem_alias: str,
+    comment_repository: CommentRepository = Depends(),
+) -> List[CommentSchema]:
+    comments = await comment_repository.get_comments(
+        training_session_id=training_session_id,
+        problem_alias=problem_alias,
+    )
+    result = []
+    for comment in comments:
+        result.append(CommentSchema(
+            id=comment.id,
+            userId=comment.user.external_id,
+            userFirstName=comment.user.first_name,
+            userLastName=comment.user.last_name,
+            userLogin=comment.user.login,
+            problemAlias=comment.problem_alias,
+            content=comment.content,
+            dtCreated=comment.dt_created
+        ))
+    return result
