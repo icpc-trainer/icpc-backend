@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Depends, Form
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Depends
 from starlette import status
 
-from app.services import ProxyManager, ProblemRepository, ContestRepository
+from app.services import ProxyManager, ContestRepository
 
 
 router = APIRouter(
