@@ -4,6 +4,10 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict
 
 
+class CommentRequest(BaseModel):
+    content: str
+
+
 class CommentSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
