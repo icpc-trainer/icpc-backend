@@ -16,7 +16,7 @@ from app.db.enums import MessageTypeEnum
 
 
 router = APIRouter(
-    prefix="/training-session",
+    prefix="/training-sessions",
     tags=["comment"],
 )
 
