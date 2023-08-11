@@ -22,7 +22,7 @@ router = APIRouter(
 
 
 @router.post(
-    "/{training_session_id}/problem/{problem_alias}/commment/send",
+    "/{training_session_id}/problem/{problem_alias}/comment/send",
     status_code=status.HTTP_200_OK,
 )
 async def send_problem_comment(
@@ -72,6 +72,7 @@ async def send_problem_comment(
             "userLogin": user_data.get("login"),
             "problemAlias": problem_alias,
             "content": content,
+            "dtCreated": str(comment.dt_created)
         }
     )
     await training_manager.broadcast(training_session_id, message.json())
