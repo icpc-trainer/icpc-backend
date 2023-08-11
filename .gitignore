@@ -3,3 +3,4 @@ postgres-data
 __pycache__
 *.py[co]
 .mypy_cache
+docker-compose.yml
