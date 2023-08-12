@@ -36,6 +36,7 @@ class DefaultSettings(BaseSettings):
 
     REDIS_HOST: str = environ.get("REDIS_HOST", "redis")
     REDIS_PORT: int = int(environ.get("REDIS_PORT", 6379))
+    REDIS_PASSWORD: str = environ.get("REDIS_PASSWORD", "changeme")
 
     MAX_CONNECTIONS_PER_GROUP: int = int(environ.get("MAX_CONNECTIONS_PER_GROUP", 3))
 
