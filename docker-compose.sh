@@ -28,7 +28,7 @@ DEV=$(
     restart: always
     env_file:
       - ./.env
-    command: [sh, -c, "redis-server --requirepass $${REDIS_PASSWORD}"]
+    command: [sh, -c, "redis-server --requirepass ${REDIS_PASSWORD}"]
     ports:
       - "6379:6379"
 
@@ -67,7 +67,7 @@ PROD=$(
     restart: always
     env_file:
       - ./.env
-    command: [sh, -c, "redis-server --requirepass $${REDIS_PASSWORD}"]
+    command: [sh, -c, "redis-server --requirepass ${REDIS_PASSWORD}"]
     ports:
       - "6379:6379"
 
