@@ -119,3 +119,32 @@ async def get_submissions_all(
 
     result = await proxy_manager.get_submissions(contest_id)
     return result
+
+
+@router.get(
+    "/{training_session_id}/submissions/problem/{problem_alias}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_submissions_by_problem(
+    training_session_id: str,
+    problem_alias: str,
+    proxy_manager: ProxyManager = Depends(ProxyManager),
+    training_session_repository: TrainingSessionRepository = Depends(),
+) -> dict:
+    # получение contest_id через training session
+    training_session = await training_session_repository.get_training_session_by_id(
+        training_session_id
+    )
+    contest_id = training_session.contest.external_id
+    result = await proxy_manager.get_submissions(contest_id)
+    response = []
+    for submission in result.get("submissions"):
+        if submission.get("problemAlias") == problem_alias:
+            response.append(submission)
+
+    return {
+        "count": len(response),
+        "submissions": response,
+    }
+
+
