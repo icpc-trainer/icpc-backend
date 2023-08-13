@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.connection import get_session
 from app.db.enums import TrainingStatusEnum
-from app.db.models import Contest, TrainingSession, Team
+from app.db.models import Contest, Team, TrainingSession
 
 
 class TrainingSessionRepository:
@@ -17,7 +17,7 @@ class TrainingSessionRepository:
         self,
         training_session_id: str,
     ) -> TrainingSession:
-        query = select(TrainingSession).where(TrainingSession.id==training_session_id)
+        query = select(TrainingSession).where(TrainingSession.id == training_session_id)
         training_session = await self.session.scalar(query)
         if not training_session:
             raise HTTPException(status_code=404)

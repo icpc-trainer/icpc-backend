@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, UploadFile
 
 from .contest_api_manager import ContestApiManager
 from .problem_state_repository import ProblemStateRepository
+from .training_session_repository import TrainingSessionRepository
 
 
 class ProxyManager:
@@ -10,9 +11,11 @@ class ProxyManager:
         self,
         contest_api_manager: ContestApiManager = Depends(ContestApiManager),
         problem_state_repository: ProblemStateRepository = Depends(ProblemStateRepository),
+        training_session_repository: TrainingSessionRepository = Depends(TrainingSessionRepository),
     ):
         self.contest_api_manager = contest_api_manager
         self.problem_state_repository = problem_state_repository
+        self.training_session_repository = training_session_repository
 
     async def get_contest(self, contest_id: int) -> dict:
         result, status_code = await self.contest_api_manager.get_contest(contest_id)
@@ -30,7 +33,12 @@ class ProxyManager:
         else:
             raise HTTPException(status_code=status_code)
 
-    async def get_contest_problems(self, contest_id: int, training_session_id: str) -> dict:
+    async def get_contest_problems(self, training_session_id: str) -> dict:
+        training_session = await self.training_session_repository.get_training_session_by_id(
+            training_session_id
+        )
+        contest_id = int(training_session.contest.external_id)
+
         result, status_code = await self.contest_api_manager.get_contest_problems(contest_id)
 
         if status_code == 200:
