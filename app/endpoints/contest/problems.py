@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import StreamingResponse
-from starlette import status
 
-from app.services import ProxyManager
+from app.schemas import ProblemStateSchema
+from app.services import ProblemStateManager, ProxyManager
 
 
 router = APIRouter(
@@ -21,6 +21,22 @@ async def contest_problems(
 ) -> dict:
     problems = await proxy_manager.get_contest_problems(training_session_id=training_session_id)
     return problems
+
+
+@router.get(
+    "/{training_session_id}/problems/{alias}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_contest_problem_by_alias(
+    training_session_id: str,
+    alias: str,
+    problem_state_manager: ProblemStateManager = Depends(ProblemStateManager),
+) -> ProblemStateSchema:
+    problem = await problem_state_manager.get_problem_by_alias(
+        training_session_id=training_session_id,
+        alias=alias,
+    )
+    return problem
 
 
 @router.get(
