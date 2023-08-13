@@ -1,8 +1,7 @@
 import asyncio
-from fastapi import Depends
 
-from app.db.enums import MessageTypeEnum, ProblemStatusEnum
-from app.services import ContestApiManager, ProblemStateManager, ProblemStateRepository, training_manager
+from app.db.enums import MessageTypeEnum
+from app.services import ContestApiManager, ProblemStateManager, training_manager
 from app.utils import WebSocketMessage
 
 
@@ -34,10 +33,11 @@ async def get_submission_verdict(
                     training_session_id=training_session_id,
                     response_content=data,
                 )
-                db_problem_status = await problem_state_manager.problem_state_repository.get_problem(
+                problem_state = await problem_state_manager.problem_state_repository.get_problem(
                     training_session_id=training_session_id,
                     alias=data.get("problemAlias"),
                 )
+                db_problem_status = problem_state.status
                 message = WebSocketMessage(
                     type=MessageTypeEnum.PROBLEM_STATUS_UPDATED,
                     payload={
