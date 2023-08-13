@@ -19,9 +19,7 @@ class ProblemStateManager:
         if await self.problem_state_repository.is_problem_states_exist(training_session_id):
             return
 
-        contest_problems = await self.proxy_manager.get_contest_problems(
-            contest_external_id, training_session_id
-        )
+        contest_problems = await self.proxy_manager.get_contest_problems(training_session_id)
         problem_state_list: list[ProblemState] = []
         for problem in contest_problems.get("problems", []):
             problem_state = ProblemState(
