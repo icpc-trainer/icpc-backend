@@ -1,9 +1,10 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 
 from .problem_state_repository import ProblemStateRepository
 from .proxy_manager import ProxyManager
 from app.db.enums import ProblemStatusEnum
 from app.db.models import ProblemState
+from app.schemas import ProblemStateSchema
 
 
 class ProblemStateManager:
@@ -37,8 +38,21 @@ class ProblemStateManager:
         if problem_state is not None and problem_state.status != ProblemStatusEnum.PASSED:
             if response_content.get("verdict") == "OK":
                 problem_state.status = ProblemStatusEnum.PASSED
-                await self.problem_state_repository.update_problem_state(problem_state)
             else:
                 if problem_state.status != ProblemStatusEnum.FAILED:
                     problem_state.status = ProblemStatusEnum.FAILED
-                    await self.problem_state_repository.update_problem_state(problem_state)
+
+            problem_state.attempts += 1
+            await self.problem_state_repository.update_problem_state(problem_state)
+
+    async def get_problem_by_alias(
+        self, training_session_id: str, alias: str,
+    ) -> ProblemStateSchema:
+        problem = await self.problem_state_repository.get_problem(
+            training_session_id=training_session_id, alias=alias
+        )
+        if problem is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND)
+        # HACK: remove this piece of shit
+        problem.problemAlias = problem.problem_alias
+        return ProblemStateSchema.model_validate(problem)

@@ -49,6 +49,7 @@ class ProxyManager:
                 )
                 if problem_state is not None:
                     problem["status"] = problem_state.status
+                    problem["attempts"] = problem_state.attempts
 
             return result
         else:
