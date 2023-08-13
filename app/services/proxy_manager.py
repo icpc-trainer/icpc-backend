@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException, UploadFile
 
 from .contest_api_manager import ContestApiManager
+from .problem_state_repository import ProblemStateRepository
 
 
 class ProxyManager:
@@ -8,8 +9,10 @@ class ProxyManager:
     def __init__(
         self,
         contest_api_manager: ContestApiManager = Depends(ContestApiManager),
+        problem_state_repository: ProblemStateRepository = Depends(ProblemStateRepository),
     ):
         self.contest_api_manager = contest_api_manager
+        self.problem_state_repository = problem_state_repository
 
     async def get_contest(self, contest_id: int) -> dict:
         result, status_code = await self.contest_api_manager.get_contest(contest_id)
@@ -27,10 +30,18 @@ class ProxyManager:
         else:
             raise HTTPException(status_code=status_code)
 
-    async def get_contest_problems(self, contest_id: int) -> dict:
+    async def get_contest_problems(self, contest_id: int, training_session_id: str) -> dict:
         result, status_code = await self.contest_api_manager.get_contest_problems(contest_id)
 
         if status_code == 200:
+            for problem in result.get("problems", []):
+                problem_state = await self.problem_state_repository.get_problem(
+                    training_session_id=training_session_id,
+                    alias=problem.get("alias"),
+                )
+                if problem_state is not None:
+                    problem["status"] = problem_state.status
+
             return result
         else:
             raise HTTPException(status_code=status_code)
@@ -79,9 +90,7 @@ class ProxyManager:
             raise HTTPException(status_code=status_code)
 
     async def get_submissions(self, contest_id: int) -> dict:
-        result, status_code = await self.contest_api_manager.get_submissions(
-            contest_id
-        )
+        result, status_code = await self.contest_api_manager.get_submissions(contest_id)
         if status_code == 200:
             return result
         else:
@@ -93,7 +102,3 @@ class ProxyManager:
             return result
         else:
             raise HTTPException(status_code=status_code)
-
-
-
-

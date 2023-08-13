@@ -17,9 +17,12 @@ router = APIRouter(
 )
 async def contest_problems(
     contest_id: int,
+    training_session_id: str,
     proxy_manager: ProxyManager = Depends(ProxyManager),
 ) -> dict:
-    problems = await proxy_manager.get_contest_problems(contest_id)
+    problems = await proxy_manager.get_contest_problems(
+        contest_id=contest_id, training_session_id=training_session_id
+    )
     return problems
 
 

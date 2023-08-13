@@ -4,6 +4,7 @@ from app.db.models.training_session import TrainingSession
 from app.db.models.submission import Submission
 from app.db.models.team import Team, user_team
 from app.db.models.user import User
+from app.db.models.problem_state import ProblemState
 
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "Contest",
     "TrainingSession",
     "Submission",
+    "ProblemState",
 ]
