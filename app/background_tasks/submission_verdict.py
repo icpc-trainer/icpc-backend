@@ -17,12 +17,11 @@ async def get_submission_verdict(
         data, status_code = await api_manager.get_submission_short(contest_id, submission_id)
         if status_code == 200:
             verdict = data.get("verdict")
+            data["id"] = submission_id
+            message = WebSocketMessage(
+                type=MessageTypeEnum.SUBMISSION_VERDICT_RETRIEVED, payload=data
+            )
+            await training_manager.broadcast(training_session_id, message.json())
             if verdict != "No report":
-                data["id"] = submission_id
-                message = WebSocketMessage(
-                    type=MessageTypeEnum.SUBMISSION_VERDICT_RETRIEVED,
-                    payload=data
-                )
-                await training_manager.broadcast(training_session_id, message.json())
                 return
         await asyncio.sleep(3)

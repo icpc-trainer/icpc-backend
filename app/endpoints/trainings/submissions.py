@@ -43,13 +43,6 @@ async def submit_solution(
         file,
     )
 
-    # уведомление об отправке ответа на задачу в websocket каналe
-    message = WebSocketMessage(
-        type=MessageTypeEnum.SUBMISSION_VERDICT_PENDING,
-        payload={"problemAlias": problem}
-    )
-    await training_manager.broadcast(training_session_id, message.json())
-
     # создание фоновой задачи на мониторинг вердикта отправки
     submission_id = result.get("runId")
     background_tasks.add_task(
