@@ -26,7 +26,9 @@ DEV=$(
     container_name: redis
     image: redis
     restart: always
-    command: [sh, -c, "redis-server"]
+    env_file:
+      - ./.env
+    command: [sh, -c, "redis-server --requirepass \$\${REDIS_PASSWORD}"]
     ports:
       - "6379:6379"
 
@@ -63,7 +65,9 @@ PROD=$(
     container_name: redis
     image: redis
     restart: always
-    command: [sh, -c, "redis-server"]
+    env_file:
+      - ./.env
+    command: [sh, -c, "redis-server --requirepass \$\${REDIS_PASSWORD}"]
     ports:
       - "6379:6379"
 
