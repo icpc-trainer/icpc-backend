@@ -1,4 +1,5 @@
 from uuid import UUID
+from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
@@ -8,3 +9,4 @@ class TrainingSessionSchema(BaseModel):
 
     id: UUID
     status: str
+    dt_created: datetime
