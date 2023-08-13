@@ -7,7 +7,7 @@ from app.db.enums import MessageTypeEnum
 @dataclass
 class WebSocketMessage:
     type: MessageTypeEnum
-    payload: dict
+    payload: dict | None
 
     def json(self):
         return json.dumps(self.__dict__, ensure_ascii=False)

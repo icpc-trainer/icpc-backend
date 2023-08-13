@@ -1,11 +1,13 @@
-from .contest_api_manager import ContestApiManager
-from .proxy_manager import ProxyManager
+from .comment_repository import CommentRepository
 from .connection_manager import ConnectionManager
+from .contest_api_manager import ContestApiManager
+from .contest_repository import ContestRepository
+from .problem_state_manager import ProblemStateManager
+from .problem_state_repository import ProblemStateRepository
+from .proxy_manager import ProxyManager
+from .redis_storage_manager import RedisStorageManager
 from .training_session_repository import TrainingSessionRepository
 from .user_repository import UserRepository
-from .comment_repository import CommentRepository
-from .contest_repository import ContestRepository
-from .redis_storage_manager import RedisStorageManager
 
 
 lobby_manager = ConnectionManager()
@@ -16,6 +18,8 @@ __all__ = [
     "ContestApiManager",
     "ProxyManager",
     "ConnectionManager",
+    "ProblemStateManager",
+    "ProblemStateRepository",
     "lobby_manager",
     "training_manager",
     "TrainingSessionRepository",

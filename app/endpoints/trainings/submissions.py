@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile, Security, Backgr
 from fastapi.security.api_key import APIKeyHeader
 from starlette import status
 
-from app.services import ProxyManager, TrainingSessionRepository
+from app.services import ProxyManager, TrainingSessionRepository, ProblemStateManager
 from app.background_tasks import get_submission_verdict
 from app.services import training_manager
 from app.db.enums import MessageTypeEnum
@@ -26,6 +26,7 @@ async def submit_solution(
     compiler: str = Form(...),
     problem: str = Form(...),
     proxy_manager: ProxyManager = Depends(ProxyManager),
+    problem_state_manager: ProblemStateManager = Depends(ProblemStateManager),
     oauth_token: str = Security(APIKeyHeader(name="Authorization")),
     training_session_repository: TrainingSessionRepository = Depends(),
 ) -> dict:
@@ -47,6 +48,7 @@ async def submit_solution(
     submission_id = result.get("runId")
     background_tasks.add_task(
         get_submission_verdict,
+        problem_state_manager,
         oauth_token,
         contest_id,
         submission_id,
