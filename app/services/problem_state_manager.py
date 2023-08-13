@@ -37,8 +37,9 @@ class ProblemStateManager:
         if problem_state is not None and problem_state.status != ProblemStatusEnum.PASSED:
             if response_content.get("verdict") == "OK":
                 problem_state.status = ProblemStatusEnum.PASSED
-                await self.problem_state_repository.update_problem_state(problem_state)
             else:
                 if problem_state.status != ProblemStatusEnum.FAILED:
                     problem_state.status = ProblemStatusEnum.FAILED
-                    await self.problem_state_repository.update_problem_state(problem_state)
+
+            problem_state.attempts += 1
+            await self.problem_state_repository.update_problem_state(problem_state)
