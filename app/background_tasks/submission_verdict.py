@@ -42,7 +42,7 @@ async def get_submission_verdict(
                     type=MessageTypeEnum.PROBLEM_STATUS_UPDATED,
                     payload={
                         "status": db_problem_status,
-                        "alias": data.get("problemAlias"),
+                        "problemAlias": data.get("problemAlias"),
                     }
                 )
                 await training_manager.broadcast(training_session_id, message.json())
