@@ -1,3 +1,5 @@
+from uuid import UUID as _UUID
+
 from sqlalchemy import TEXT, UUID, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -11,7 +13,7 @@ class Submission(BaseTable):
     problem_alias: Mapped[str] = mapped_column(
         String(255),
     )
-    training_session_id: Mapped[UUID] = mapped_column(
+    training_session_id: Mapped[_UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("training_sessions.id"),
     )
