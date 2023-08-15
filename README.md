@@ -109,3 +109,19 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
     }
 }
 ~~~~
+
+
+`PROBLEM_ASSIGNED` - назначение задачи пользователю
+
+Этот тип сообщения прослушивается. Сохраняется информация о пользователе
+
+Обязательные поля в `payload`: `user`, `problemAlias`
+~~~~json
+{
+    "type": "PROBLEM_ASSIGNED",
+    "payload": {
+        "user": "<информация_о_пользователе>",
+        "problemAlias": "B",
+    }
+}
+~~~~

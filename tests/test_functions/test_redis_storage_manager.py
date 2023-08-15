@@ -1,7 +1,8 @@
-from app.services import redis_storage_manager
+from app.services import RedisStorageManager
 
 
 def test_code_snap_manager():
+    redis_storage_manager = RedisStorageManager()
     training_session_id = "04d3f707-ed68-4b2d-a91a-0ae200c5c7d3"
     alias = "B"
     code = "print('hello!')"
@@ -10,6 +11,7 @@ def test_code_snap_manager():
 
 
 def test_controller_manager():
+    redis_storage_manager = RedisStorageManager()
     training_session_id = "04d3f707-ed68-4b2d-a91a-0ae200c5c7d3"
     user_id = "326882283"
     redis_storage_manager.controller.set(training_session_id, user_id)

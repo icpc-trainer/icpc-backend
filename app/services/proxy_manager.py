@@ -3,6 +3,8 @@ from fastapi import Depends, HTTPException, UploadFile
 from .contest_api_manager import ContestApiManager
 from .problem_state_repository import ProblemStateRepository
 from .training_session_repository import TrainingSessionRepository
+from .redis_storage_manager import RedisStorageManager
+
 
 
 class ProxyManager:
@@ -12,10 +14,12 @@ class ProxyManager:
         contest_api_manager: ContestApiManager = Depends(ContestApiManager),
         problem_state_repository: ProblemStateRepository = Depends(ProblemStateRepository),
         training_session_repository: TrainingSessionRepository = Depends(TrainingSessionRepository),
+        redis_storage_manager: RedisStorageManager = Depends(),
     ):
         self.contest_api_manager = contest_api_manager
         self.problem_state_repository = problem_state_repository
         self.training_session_repository = training_session_repository
+        self.redis_storage_manager = redis_storage_manager
 
     async def get_contest(self, contest_id: int) -> dict:
         result, status_code = await self.contest_api_manager.get_contest(contest_id)
@@ -50,6 +54,13 @@ class ProxyManager:
                 if problem_state is not None:
                     problem["status"] = problem_state.status
                     problem["attempts"] = problem_state.attempts
+
+                user = self.redis_storage_manager.assigments.get(
+                    training_session_id=training_session_id,
+                    alias=problem.get("alias"),
+                )
+
+                problem["assignedUser"] = user
 
             return result
         else:
