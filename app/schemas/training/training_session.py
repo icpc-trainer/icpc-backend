@@ -10,3 +10,8 @@ class TrainingSessionSchema(BaseModel):
     id: UUID
     status: str
     dt_created: datetime
+
+
+class TrainingSessionRequest(BaseModel):
+    team_id: str
+    contest_id: str

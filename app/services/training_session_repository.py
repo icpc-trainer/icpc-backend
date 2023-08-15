@@ -40,7 +40,7 @@ class TrainingSessionRepository:
         )
         return await self.session.scalar(query)
 
-    async def get_training_session(
+    async def create_training_session(
         self,
         contest_external_id: str,
         team_external_id: str,
@@ -76,6 +76,48 @@ class TrainingSessionRepository:
             await self.session.commit()
             await self.session.refresh(training_session)
 
+        return training_session
+
+    async def get_training_session(
+        self,
+        contest_external_id: str,
+        team_external_id: str,
+    ) -> TrainingSession:
+        # Запросы на получение контеста и команды
+        contest_query = await self.session.execute(
+            select(Contest).filter_by(external_id=contest_external_id)
+        )
+        contest = contest_query.scalar_one_or_none()
+        # Обычно это исключение не должно вызываться, так как контесты будут вытягиваться
+        # из нашей же базы
+        if contest is None:
+            raise HTTPException(
+                status_code=400, detail=f"Контест с id {contest_external_id} не найден"
+            )
+
+        team_query = await self.session.execute(
+            select(Team).filter_by(external_id=team_external_id)
+        )
+
+        team = team_query.scalar_one_or_none()
+        # Обычно это исключение не должно вызываться, так как команды будут или
+        # возможно уже добавляются в базу как только пользователь запрашивает у
+        # нас список своих команд
+        if team is None:
+            raise HTTPException(
+                status_code=400, detail=f"Команда с id {team_external_id} не найдена"
+            )
+
+        training_session_query = await self.session.execute(
+            select(TrainingSession).filter_by(contest_id=contest.id, team_id=team.id)
+        )
+
+        training_session = training_session_query.scalar_one_or_none()
+
+        if training_session is None:
+            raise HTTPException(
+                status_code=404, detail=f"Сессия не найдена"
+            )
         return training_session
 
     async def complete_training_session(

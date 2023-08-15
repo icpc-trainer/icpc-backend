@@ -3,11 +3,12 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.db.enums import MessageTypeEnum
-from app.schemas import TrainingSessionSchema
+from app.schemas import TrainingSessionSchema, TrainingSessionRequest
 from app.services import (
     ProblemStateManager,
     TrainingSessionRepository,
     RedisStorageManager,
+    ProxyManager,
     training_manager,
 )
 from app.utils import WebSocketMessage
@@ -27,15 +28,40 @@ async def get_training_session(
     contest_external_id: str = Query(alias="contest_id"),
     team_external_id: str = Query(alias="team_id"),
     training_session_repository: TrainingSessionRepository = Depends(),
-    problem_state_manager: ProblemStateManager = Depends(),
 ) -> TrainingSessionSchema:
     training_session = await training_session_repository.get_training_session(
         contest_external_id,
         team_external_id,
     )
 
+    return TrainingSessionSchema.model_validate(training_session)
+
+
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_training_session(
+    body: TrainingSessionRequest,
+    training_session_repository: TrainingSessionRepository = Depends(),
+    problem_state_manager: ProblemStateManager = Depends(),
+    proxy_manager: ProxyManager = Depends(ProxyManager),
+) -> TrainingSessionSchema:
+    # 1. РЕГИСТРАЦИЯ КОМАНДЫ
+    await proxy_manager.register_for_contest(body.contest_id, body.team_id)
+
+    # 2. СТАРТ ВИРТУАЛЬНОГО СОРЕВНОВАНИЯ
+    await proxy_manager.start_the_contest(body.contest_id)
+
+    # 3. ПОЛУЧЕНИЕ КОНТЕСТА
+    training_session = await training_session_repository.create_training_session(
+        contest_external_id=body.contest_id,
+        team_external_id=body.team_id,
+    )
+
+    # 4. Инициализация состояний проблем
     await problem_state_manager.init_problem_states(
-        contest_external_id=contest_external_id,
+        contest_external_id=body.contest_id,
         training_session_id=training_session.id,
     )
 
