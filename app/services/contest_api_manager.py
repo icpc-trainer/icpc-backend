@@ -177,6 +177,18 @@ class ContestApiManager:
             else:
                 return {}, response.status_code
 
+    async def get_user_teams(self) -> tuple[dict, int]:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                url=f"{self.get_url()}/teams",
+                headers={"Authorization": self.authorization},
+            )
+            status_code = response.status_code
+            if status_code == 200:
+                return response.json(), response.status_code
+            else:
+                return {}, response.status_code
+
 
 if __name__ == "__main__":
     # TODO: Move to unit tests
