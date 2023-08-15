@@ -7,7 +7,7 @@ from app.schemas import TrainingSessionSchema
 from app.services import (
     ProblemStateManager,
     TrainingSessionRepository,
-    redis_storage_manager,
+    RedisStorageManager,
     training_manager,
 )
 from app.utils import WebSocketMessage
@@ -85,7 +85,11 @@ async def complete_training_session(
     "/{training_session_id}/code/{alias}",
     status_code=status.HTTP_200_OK,
 )
-async def get_code_from_redis(training_session_id: UUID, alias: str) -> dict:
+async def get_code_from_redis(
+    training_session_id: UUID,
+    alias: str,
+    redis_storage_manager: RedisStorageManager = Depends(),
+) -> dict:
     code = redis_storage_manager.codesnap.get(training_session_id, alias)
     return {"code": code}
 
@@ -94,7 +98,10 @@ async def get_code_from_redis(training_session_id: UUID, alias: str) -> dict:
     "/{training_session_id}/control/current",
     status_code=status.HTTP_200_OK,
 )
-async def get_current_controller(training_session_id: UUID) -> dict:
+async def get_current_controller(
+    training_session_id: UUID,
+    redis_storage_manager: RedisStorageManager = Depends(),
+) -> dict:
     user_id = redis_storage_manager.controller.get(training_session_id)
     return {"userId": user_id}
 
@@ -103,6 +110,9 @@ async def get_current_controller(training_session_id: UUID) -> dict:
     "/{training_session_id}/online",
     status_code=status.HTTP_200_OK,
 )
-async def get_online_users(training_session_id: UUID) -> dict:
+async def get_online_users(
+    training_session_id: UUID,
+    redis_storage_manager: RedisStorageManager = Depends(),
+) -> dict:
     users = redis_storage_manager.training_users.get_users(training_session_id)
     return {"users": users}
