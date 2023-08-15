@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from fastapi import Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.connection import get_session
@@ -23,6 +23,22 @@ class TrainingSessionRepository:
             raise HTTPException(status_code=404)
 
         return training_session
+
+    async def get_active_training_by_team_id(
+        self,
+        team_id: str,
+    ) -> TrainingSession | None:
+        query = (
+            select(TrainingSession)
+            .join(Team, TrainingSession.team_id == Team.id)
+            .where(
+                and_(
+                    Team.external_id == team_id,
+                    TrainingSession.status == TrainingStatusEnum.IN_PROCESS
+                )
+            )
+        )
+        return await self.session.scalar(query)
 
     async def get_training_session(
         self,
