@@ -12,7 +12,6 @@ from .user_repository import UserRepository
 
 lobby_manager = ConnectionManager()
 training_manager = ConnectionManager()
-redis_storage_manager = RedisStorageManager()
 
 __all__ = [
     "ContestApiManager",
@@ -26,5 +25,5 @@ __all__ = [
     "UserRepository",
     "CommentRepository",
     "ContestRepository",
-    "redis_storage_manager",
+    "RedisStorageManager",
 ]
