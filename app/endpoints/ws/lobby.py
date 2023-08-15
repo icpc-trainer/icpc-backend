@@ -1,9 +1,9 @@
 import asyncio
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 
 from app.db.enums import MessageTypeEnum
-from app.services import lobby_manager as manager, redis_storage_manager
+from app.services import lobby_manager as manager, RedisStorageManager
 from app.utils import WebSocketMessage
 
 
@@ -12,7 +12,11 @@ router = APIRouter(
     tags=["Lobby"],
 )
 
-async def handle_message(team_id, message_data):
+async def handle_message(
+        team_id,
+        message_data,
+        redis_storage_manager,
+    ):
     """
     Функция обрабатывает входящие сообщения
     """
@@ -33,6 +37,7 @@ async def lobby(
     websocket: WebSocket,
     team_id: str,
     user_id: str,
+    redis_storage_manager: RedisStorageManager = Depends(),
 ) -> None:
     is_connected = await manager.connect(websocket, team_id)
 
@@ -50,7 +55,9 @@ async def lobby(
         while True:
             msg = await websocket.receive_text()
 
-            asyncio.create_task(handle_message(str(team_id), msg))
+            asyncio.create_task(
+                handle_message(str(team_id), msg, redis_storage_manager)
+            )
 
             await manager.broadcast(team_id, msg)
     except WebSocketDisconnect:

@@ -1,12 +1,12 @@
 from uuid import UUID
 import asyncio
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 
 from app.db.enums import MessageTypeEnum
 from app.services import training_manager as manager
 from app.utils import WebSocketMessage
-from app.services import redis_storage_manager
+from app.services import RedisStorageManager
 
 
 router = APIRouter(
@@ -15,7 +15,11 @@ router = APIRouter(
 )
 
 
-async def handle_message(training_session_id, message_data):
+async def handle_message(
+        training_session_id,
+        message_data,
+        redis_storage_manager,
+    ):
     """
     Функция обрабатывает входящие сообщения
     """
@@ -40,6 +44,12 @@ async def handle_message(training_session_id, message_data):
             training_session_id,
             message.payload["user"],
         )
+    elif message.type == MessageTypeEnum.PROBLEM_ASSIGNED:
+        redis_storage_manager.assigments.set(
+            training_session_id,
+            message.payload['problemAlias'],
+            message.payload['user'],
+        )
 
 
 @router.websocket("/training")
@@ -47,6 +57,7 @@ async def training(
     websocket: WebSocket,
     training_session_id: UUID,
     user_id: str,
+    redis_storage_manager: RedisStorageManager = Depends(),
 ):
     is_connected = await manager.connect(websocket, str(training_session_id))
 
@@ -63,7 +74,11 @@ async def training(
         while True:
             msg = await websocket.receive_text()
 
-            asyncio.create_task(handle_message(str(training_session_id), msg))
+            asyncio.create_task(handle_message(
+                str(training_session_id),
+                msg,
+                redis_storage_manager,
+            ))
 
             await manager.broadcast(str(training_session_id), msg)
     except WebSocketDisconnect:
