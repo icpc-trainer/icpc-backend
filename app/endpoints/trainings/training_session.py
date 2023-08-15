@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.db.enums import MessageTypeEnum
 from app.schemas import TrainingSessionSchema
@@ -106,3 +106,23 @@ async def get_current_controller(training_session_id: UUID) -> dict:
 async def get_online_users(training_session_id: UUID) -> dict:
     users = redis_storage_manager.training_users.get_users(training_session_id)
     return {"users": users}
+
+
+@router.get(
+    "/team/{team_id}/reconnect",
+    status_code=status.HTTP_200_OK,
+)
+async def reconnect(
+    team_id: int,
+    training_session_repository: TrainingSessionRepository = Depends(),
+) -> TrainingSessionSchema:
+    training_session = await training_session_repository.get_active_training_by_team_id(
+        team_id=str(team_id)
+    )
+    if not training_session:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    return TrainingSessionSchema.model_validate(training_session)
+
+
+
