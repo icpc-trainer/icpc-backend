@@ -4,7 +4,7 @@ from starlette import status
 
 from app.db.connection import get_session
 from app.schemas import PingResponse
-from app.utils.health_check import health_check_db
+from app.utils.health_check import health_check_db, health_check_redis
 
 
 router = APIRouter(
@@ -36,4 +36,18 @@ async def ping_database(
     raise HTTPException(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail="Database isn't working",
+    )
+
+@router.get(
+    "/ping-redis",
+    response_model=PingResponse,
+    status_code=status.HTTP_200_OK,
+    responses={status.HTTP_500_INTERNAL_SERVER_ERROR: {"description": "Database isn't working"}},
+)
+async def ping_redis() -> dict:
+    if await health_check_redis():
+        return {"message": "Redis worked!"}
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Redis isn't working",
     )
