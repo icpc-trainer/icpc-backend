@@ -6,7 +6,6 @@ from .training_session_repository import TrainingSessionRepository
 from .redis_storage_manager import RedisStorageManager
 
 
-
 class ProxyManager:
     # TODO: separate to different managers by api groups
     def __init__(
@@ -89,7 +88,7 @@ class ProxyManager:
         if status_code == 200:
             return result
         else:
-            raise HTTPException(status_code=status_code)
+            raise HTTPException(status_code=status_code, detail=result)
 
     async def get_submission_short(self, contest_id: int, submission_id: int) -> dict:
         result, status_code = await self.contest_api_manager.get_submission_short(
