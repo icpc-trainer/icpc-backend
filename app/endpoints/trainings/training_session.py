@@ -10,6 +10,7 @@ from app.services import (
     RedisStorageManager,
     ProxyManager,
     training_manager,
+    lobby_manager,
 )
 from app.utils import WebSocketMessage
 
@@ -64,6 +65,18 @@ async def create_training_session(
         contest_external_id=body.contest_id,
         training_session_id=training_session.id,
     )
+
+    # 5. Уведомление всей команды о старте
+    message = WebSocketMessage(
+        type=MessageTypeEnum.TRAINING_STARTED,
+        payload={
+            "id": str(training_session.id),
+            "status": training_session.status,
+            "dtCreated": str(training_session.dt_created),
+        },
+    )
+
+    await lobby_manager.broadcast(str(body.team_id), message.json())
 
     return TrainingSessionSchema.model_validate(training_session)
 
