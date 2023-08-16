@@ -89,7 +89,7 @@ class ContestApiManager:
             if status_code == 200:
                 return response.json(), response.status_code
             else:
-                return {}, response.status_code
+                return {"message": response.content.decode()}, response.status_code
 
     async def get_submission_short(self, contest_id: int, submission_id: int) -> tuple[dict, int]:
         async with httpx.AsyncClient() as client:
