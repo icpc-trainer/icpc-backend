@@ -19,6 +19,12 @@ class ContestRepository:
         )
         return await self.session.scalar(query)
 
+    async def get_all(self) -> list[Contest]:
+        query = select(Contest)
+        result = await self.session.execute(query)
+        contests = result.scalars().all()
+        return contests
+
     async def create_if_not_exists(
         self,
         contest_external_id: str,
