@@ -125,7 +125,7 @@ class ProxyManager:
 
     async def register_for_contest(self, contest_id: int, team_id: int) -> dict:
         result, status_code = await self.contest_api_manager.register_for_contest(contest_id, team_id)
-        if status_code == 201 or status_code == 200:
+        if status_code == 201 or status_code == 200 or status_code == 409:
             return result
         else:
             raise HTTPException(status_code=status_code)

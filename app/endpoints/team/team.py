@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, Depends
 from starlette import status
 
-from app.services import redis_storage_manager, ProxyManager
+from app.services import redis_storage_manager, ProxyManager, TeamManager
 
 
 router = APIRouter(
@@ -23,8 +23,12 @@ async def get_online_users(team_id: str) -> dict:
     "",
     status_code=status.HTTP_200_OK,
 )
-async def get_online_users(
+async def get_user_teams(
     proxy_manager: ProxyManager = Depends(ProxyManager),
+    team_manager: TeamManager = Depends()
 ) -> tuple:
     teams = await proxy_manager.get_user_teams()
+    # TODO должны ли удалять команды если на контесте они удаляются?
+    if teams:
+        await team_manager.init_teams(teams)
     return teams
