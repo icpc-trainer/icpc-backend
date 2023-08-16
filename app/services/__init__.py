@@ -8,6 +8,8 @@ from .proxy_manager import ProxyManager
 from .redis_storage_manager import RedisStorageManager
 from .training_session_repository import TrainingSessionRepository
 from .user_repository import UserRepository
+from .team_manager import TeamManager
+from .team_repository import TeamRepository
 
 
 lobby_manager = ConnectionManager()
@@ -26,4 +28,6 @@ __all__ = [
     "CommentRepository",
     "ContestRepository",
     "RedisStorageManager",
+    "TeamManager",
+    "TeamRepository",
 ]
