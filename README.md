@@ -87,6 +87,19 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
 }
 ~~~~
 
+`TRAINING_STARTED` - отправляется всем когда кто-то нажал кнопку начала тренировки
+
+~~~~json
+{
+    "type": "TRAINING_STARTED",
+    "payload": {
+        "id": "0fc88187-cd79-473b-be37-05e2e475abb6",
+        "status": "IN_PROCESS",
+        "dtCreated": "2023-08-17 17:50:09.378486+00:00"
+    }
+}
+~~~~
+
 `TRAINING_FINISHED` - отправляется всем когда кто-то нажал кнопку завершения тренировки
 
 ~~~~json
