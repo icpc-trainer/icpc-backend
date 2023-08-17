@@ -1,5 +1,5 @@
 import httpx
-from fastapi import Security, UploadFile
+from fastapi import Security, UploadFile, HTTPException, status
 from fastapi.security.api_key import APIKeyHeader
 
 from app.config import settings
@@ -145,37 +145,49 @@ class ContestApiManager:
                 return {}, response.status_code
 
     async def register_for_contest(self, contest_id: int, team_id: int) -> tuple[dict, int]:
-        async with httpx.AsyncClient() as client:
-            body = {
-                "contestId": contest_id,
-                "teamId": team_id,
-            }
-            response = await client.post(
-                url=f"{self.get_url()}/contests/{contest_id}/participants",
-                headers={"Authorization": self.authorization},
-                data=body,
+        try:
+            async with httpx.AsyncClient() as client:
+                body = {
+                    "contestId": contest_id,
+                    "teamId": team_id,
+                }
+                response = await client.post(
+                    url=f"{self.get_url()}/contests/{contest_id}/participants",
+                    headers={"Authorization": self.authorization},
+                    data=body,
+                )
+                status_code = response.status_code
+                if status_code == 201:
+                    return response.json(), response.status_code
+                else:
+                    return {}, response.status_code
+        except httpx.TimeoutException:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Connection to remote server timed out"
             )
-            status_code = response.status_code
-            if status_code == 201:
-                return response.json(), response.status_code
-            else:
-                return {}, response.status_code
 
     async def start_the_contest(self, contest_id: int) -> tuple[dict, int]:
-        async with httpx.AsyncClient() as client:
-            body = {
-                "contestId": contest_id,
-            }
-            response = await client.put(
-                url=f"{self.get_url()}/contests/{contest_id}/participation",
-                headers={"Authorization": self.authorization},
-                data=body,
+        try:
+            async with httpx.AsyncClient(timeout=20) as client:
+                body = {
+                    "contestId": contest_id,
+                }
+                response = await client.put(
+                    url=f"{self.get_url()}/contests/{contest_id}/participation",
+                    headers={"Authorization": self.authorization},
+                    data=body,
+                )
+                status_code = response.status_code
+                if status_code == 200:
+                    return response.json(), response.status_code
+                else:
+                    return {}, response.status_code
+        except httpx.TimeoutException:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Connection to remote server timed out"
             )
-            status_code = response.status_code
-            if status_code == 200:
-                return response.json(), response.status_code
-            else:
-                return {}, response.status_code
 
     async def get_user_teams(self) -> tuple[dict, int]:
         async with httpx.AsyncClient() as client:
