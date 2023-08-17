@@ -65,7 +65,12 @@ class ProxyManager:
         else:
             raise HTTPException(status_code=status_code)
 
-    async def get_problem_statement(self, contest_id: int, alias: str) -> bytes:
+    async def get_problem_statement(self, training_session_id: str, alias: str) -> bytes:
+        training_session = await self.training_session_repository.get_training_session_by_id(
+            training_session_id
+        )
+        contest_id = int(training_session.contest.external_id)
+
         result, status_code = await self.contest_api_manager.get_problem_statement(
             contest_id, alias
         )
