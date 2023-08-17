@@ -40,13 +40,16 @@ async def get_contest_problem_by_alias(
 
 
 @router.get(
-    "/{contest_id}/problems/{alias}/statement",
+    "/{training_session_id}/problems/{alias}/statement",
     status_code=status.HTTP_200_OK,
 )
 async def problem_statement(
-    contest_id: int,
+    training_session_id: str,
     alias: str,
     proxy_manager: ProxyManager = Depends(ProxyManager),
 ) -> StreamingResponse:
-    result = await proxy_manager.get_problem_statement(contest_id, alias)
+    result = await proxy_manager.get_problem_statement(
+        training_session_id,
+        alias
+    )
     return StreamingResponse(iter([result]), media_type="application/octet-stream")
