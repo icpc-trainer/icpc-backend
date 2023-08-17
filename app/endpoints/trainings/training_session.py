@@ -41,6 +41,11 @@ async def get_training_session(
 @router.post(
     "",
     status_code=status.HTTP_201_CREATED,
+    responses={
+        status.HTTP_503_SERVICE_UNAVAILABLE: {
+            "description": "Connection to remote server timed out",
+        },
+    },
 )
 async def create_training_session(
     body: TrainingSessionRequest,
