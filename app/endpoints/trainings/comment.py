@@ -41,20 +41,22 @@ async def send_problem_comment(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
     # получение id training_session
-    training_session = await training_session_repository.get_training_session_by_id(training_session_id)
+    training_session = await training_session_repository.get_training_session_by_id(
+        training_session_id
+    )
 
     # создание коммента
     comment = await comment_repository.create_comment(
         user_id=user.id,
         training_session_id=training_session.id,
         problem_alias=problem_alias,
-        content=body.content
+        content=body.content,
     )
 
     # отправка коммента по сокету
     message = WebSocketMessage(
-        type = MessageTypeEnum.PROBLEM_COMMENT_RECEIVED,
-        payload = {
+        type=MessageTypeEnum.PROBLEM_COMMENT_RECEIVED,
+        payload={
             "id": str(comment.id),
             "userId": user_data.get("id"),
             "userFirstName": user_data.get("first_name"),
@@ -62,8 +64,8 @@ async def send_problem_comment(
             "userLogin": user_data.get("login"),
             "problemAlias": problem_alias,
             "content": body.content,
-            "dtCreated": str(comment.dt_created)
-        }
+            "dtCreated": str(comment.dt_created),
+        },
     )
     await training_manager.broadcast(training_session_id, message.json())
 
@@ -85,14 +87,16 @@ async def get_problem_comments(
     )
     result = []
     for comment in comments:
-        result.append(CommentSchema(
-            id=comment.id,
-            userId=comment.user.external_id,
-            userFirstName=comment.user.first_name,
-            userLastName=comment.user.last_name,
-            userLogin=comment.user.login,
-            problemAlias=comment.problem_alias,
-            content=comment.content,
-            dtCreated=comment.dt_created
-        ))
+        result.append(
+            CommentSchema(
+                id=comment.id,
+                userId=comment.user.external_id,
+                userFirstName=comment.user.first_name,
+                userLastName=comment.user.last_name,
+                userLogin=comment.user.login,
+                problemAlias=comment.problem_alias,
+                content=comment.content,
+                dtCreated=comment.dt_created,
+            )
+        )
     return result
