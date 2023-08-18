@@ -46,5 +46,14 @@ async def get_submission_verdict(
                     }
                 )
                 await training_manager.broadcast(training_session_id, message.json())
+
+                message = WebSocketMessage(
+                    type=MessageTypeEnum.PROBLEM_ATTEMPTS_UPDATED,
+                    payload={
+                        "attempts": problem_state.attempts,
+                        "problemAlias": data.get("problemAlias"),
+                    }
+                )
+                await training_manager.broadcast(training_session_id, message.json())
                 return
         await asyncio.sleep(3)

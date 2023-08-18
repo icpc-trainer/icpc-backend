@@ -35,7 +35,7 @@ class ProblemStateManager:
         problem_state = await self.problem_state_repository.get_problem(
             training_session_id=training_session_id, alias=response_content.get("problemAlias")
         )
-        if problem_state is not None and problem_state.status != ProblemStatusEnum.PASSED:
+        if problem_state is not None:
             if response_content.get("verdict") == "OK":
                 problem_state.status = ProblemStatusEnum.PASSED
             else:
