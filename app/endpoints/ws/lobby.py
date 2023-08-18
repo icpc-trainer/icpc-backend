@@ -30,6 +30,11 @@ async def handle_message(
             team_id,
             message.payload["user"],
         )
+    elif message.type == MessageTypeEnum.CONTEST_SELECTED:
+        redis_storage_manager.selected_contests.set(
+            team_id,
+            message.payload["contestId"],
+        )
 
 
 @router.websocket("/lobby")
