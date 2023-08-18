@@ -152,3 +152,14 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
     }
 }
 ~~~~
+
+`PROBLEM_ATTEMPTS_UPDATED` - обновление кол-во попыток по задаче
+~~~~json
+{
+    "type": "PROBLEM_ATTEMPTS_UPDATED",
+    "payload": {
+        "attempts": 3,
+        "problemAlias": "A"
+    }
+}
+~~~~
