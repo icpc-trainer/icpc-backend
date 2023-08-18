@@ -7,6 +7,7 @@ from .trainings.submissions import router as submission_router
 from .trainings.training_session import router as training_session_router
 from .trainings.comment import router as comment_router
 from .team.team import router as team_router
+from .lobby.lobby import router as lobby_router
 from .ws.lobby import router as ws_lobby_router
 from .ws.training import router as ws_training_router
 
@@ -23,6 +24,7 @@ list_of_routes = [
     comment_router,
     user_router,
     team_router,
+    lobby_router,
 ]
 
 
