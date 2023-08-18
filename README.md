@@ -138,3 +138,17 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
     }
 }
 ~~~~
+
+`CONTEST_SELECTED` - выбор контеста в лобби
+
+Этот тип сообщения прослушивается. Сохраняется информация о выбранном контесте
+
+Обязательные поля в `payload`: `contestId`
+~~~~json
+{
+    "type": "CONTEST_SELECTED",
+    "payload": {
+        "contestId": 51004,
+    }
+}
+~~~~

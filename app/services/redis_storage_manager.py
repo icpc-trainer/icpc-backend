@@ -86,6 +86,21 @@ class AssigmentManager:
         return json.loads(user) if user else None
 
 
+class SelectedContestManager:
+    def __init__(self, redis_storage, prefix):
+        self.redis_storage = redis_storage
+        self.prefix = prefix
+
+    def set(self, team_id, contest_id) -> None:
+        key = f"{self.prefix}:{team_id}"
+        self.redis_storage.set_value(key, contest_id)
+
+    def get(self, team_id) -> str:
+        key = f"{self.prefix}:{team_id}"
+        contest_id = self.redis_storage.get_value(key)
+        return contest_id
+
+
 class RedisStorageManager:
     def __init__(self):
         self.redis_storage = RedisStorage()
@@ -94,3 +109,4 @@ class RedisStorageManager:
         self.lobby_users = UsersManager(self.redis_storage, "users:lobbies")
         self.training_users = UsersManager(self.redis_storage, "users:trainings")
         self.assigments = AssigmentManager(self.redis_storage, "assigments")
+        self.selected_contests = SelectedContestManager(self.redis_storage, "selected_contests")
