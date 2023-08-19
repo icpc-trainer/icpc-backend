@@ -20,7 +20,12 @@ class ProxyManager:
         self.training_session_repository = training_session_repository
         self.redis_storage_manager = redis_storage_manager
 
-    async def get_contest(self, contest_id: int) -> dict:
+    async def get_contest(self, training_session_id: str) -> dict:
+        training_session = await self.training_session_repository.get_training_session_by_id(
+            training_session_id
+        )
+        contest_id = int(training_session.contest.external_id)
+
         result, status_code = await self.contest_api_manager.get_contest(contest_id)
 
         if status_code == 200:

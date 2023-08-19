@@ -12,19 +12,14 @@ router = APIRouter(
 
 
 @router.get(
-    "/{contest_id}",
+    "/{training_session_id}",
     status_code=status.HTTP_200_OK,
 )
 async def contest_data(
-    contest_id: int,
+    training_session_id: str,
     proxy_manager: ProxyManager = Depends(ProxyManager),
-    contest_repository: ContestRepository = Depends(),
 ) -> dict:
-    contest_data = await proxy_manager.get_contest(contest_id)
-    await contest_repository.create_if_not_exists(
-        str(contest_id),
-        contest_data,
-    )
+    contest_data = await proxy_manager.get_contest(training_session_id)
     return contest_data
 
 @router.get(
