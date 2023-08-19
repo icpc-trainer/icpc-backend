@@ -178,3 +178,47 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
     }
 }
 ~~~~
+
+`PROBLEM_COMMENT_RECEIVED` - Коммент отправляется по ручке, событие тригерит вебсокет
+~~~~json
+{
+    "type": "PROBLEM_COMMENT_RECEIVED",
+    "payload": {
+        "id": "63717229-f397-4bf9-9d9b-3d44005a5dd2",
+        "userId": 1764832810,
+        "userFirstName": "John",
+        "userLastName": "Doe",
+        "userLogin": "johoe",
+        "problemAlias": "A",
+        "content": "Content of comment",
+        "dtCreated": "2023-08-17 17:50:09.378486+00:00",
+    }
+}
+~~~~
+
+`PROBLEM_COMMENT_UPDATED` - Коммент обновляется по ручке, событие тригерит вебсокет
+~~~~json
+{
+    "type": "PROBLEM_COMMENT_UPDATED",
+    "payload": {
+        "id": "63717229-f397-4bf9-9d9b-3d44005a5dd2",
+        "userId": 1764832810,
+        "userFirstName": "John",
+        "userLastName": "Doe",
+        "userLogin": "johoe",
+        "problemAlias": "A",
+        "content": "New content of comment",
+        "dtCreated": "2023-08-17 17:50:09.378486+00:00",
+    }
+}
+~~~~
+
+`PROBLEM_COMMENT_DELETED` - Коммент удаляется по ручке, событие тригерит вебсокет
+~~~~json
+{
+    "type": "PROBLEM_COMMENT_DELETED",
+    "payload": {
+        "id": "63717229-f397-4bf9-9d9b-3d44005a5dd2",
+    }
+}
+~~~~
