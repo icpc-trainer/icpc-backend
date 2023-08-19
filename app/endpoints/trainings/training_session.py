@@ -86,7 +86,7 @@ async def create_training_session(
 
     await lobby_manager.broadcast(str(body.team_id), message.json())
 
-    contest = await proxy_manager.get_contest(body.contest_id)
+    contest = await proxy_manager.get_contest(training_session.id)
     background_tasks.add_task(
         training_session_finisher,
         timedelta(seconds=int(contest.get("duration"))),
