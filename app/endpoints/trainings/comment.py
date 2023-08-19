@@ -73,7 +73,7 @@ async def send_problem_comment(
 
 
 @router.get(
-    "/{training_session_id}/problem/{problem_alias}/comments/",
+    "/{training_session_id}/problem/{problem_alias}/comments",
     status_code=status.HTTP_200_OK,
 )
 async def get_problem_comments(
