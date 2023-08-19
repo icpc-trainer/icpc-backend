@@ -157,8 +157,8 @@ class ContestApiManager:
                     data=body,
                 )
                 status_code = response.status_code
-                if status_code == 201:
-                    return response.json(), response.status_code
+                if status_code == 201 or status_code == 200:
+                    return {"message": response.content.decode()}, response.status_code
                 else:
                     return {}, response.status_code
         except httpx.TimeoutException:
@@ -180,7 +180,7 @@ class ContestApiManager:
                 )
                 status_code = response.status_code
                 if status_code == 200:
-                    return response.json(), response.status_code
+                    return {"message": response.content.decode()}, response.status_code
                 else:
                     return {}, response.status_code
         except httpx.TimeoutException:
@@ -235,6 +235,8 @@ if __name__ == "__main__":
 
     async def main():
         response = await manager.get_my_standing(contest_id=50952)
+        # response = await manager.register_for_contest(contest_id=51397, team_id=6022)
+        response = await manager.start_the_contest(contest_id=51397)
         # response = await manager.get_problems(contest_id=50952)
         print(response)
 
