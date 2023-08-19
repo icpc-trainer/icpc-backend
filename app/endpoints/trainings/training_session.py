@@ -1,6 +1,7 @@
 from uuid import UUID
+from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, BackgroundTasks
 
 from app.db.enums import MessageTypeEnum
 from app.schemas import TrainingSessionSchema, TrainingSessionRequest
@@ -13,6 +14,7 @@ from app.services import (
     lobby_manager,
 )
 from app.utils import WebSocketMessage
+from app.background_tasks import training_session_finisher
 
 
 router = APIRouter(
@@ -49,6 +51,7 @@ async def get_training_session(
 )
 async def create_training_session(
     body: TrainingSessionRequest,
+    background_tasks: BackgroundTasks,
     training_session_repository: TrainingSessionRepository = Depends(),
     problem_state_manager: ProblemStateManager = Depends(),
     proxy_manager: ProxyManager = Depends(ProxyManager),
@@ -82,6 +85,14 @@ async def create_training_session(
     )
 
     await lobby_manager.broadcast(str(body.team_id), message.json())
+
+    contest = await proxy_manager.get_contest(body.contest_id)
+    background_tasks.add_task(
+        training_session_finisher,
+        timedelta(seconds=int(contest.get("duration"))),
+        training_session.id,
+        training_session_repository,
+    )
 
     return TrainingSessionSchema.model_validate(training_session)
 
@@ -177,6 +188,3 @@ async def reconnect(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     return TrainingSessionSchema.model_validate(training_session)
-
-
-
