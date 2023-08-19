@@ -1,8 +1,8 @@
-from fastapi import Depends
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
-from typing import List
+
+from fastapi import Depends
+from sqlalchemy import delete, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.connection import get_session
 from app.db.models import Comment
@@ -34,10 +34,17 @@ class CommentRepository:
         self,
         training_session_id: UUID,
         problem_alias: str,
-    ) -> List[Comment]:
+    ) -> list[Comment]:
         query = select(Comment).filter_by(
             training_session_id=training_session_id,
             problem_alias=problem_alias,
         )
-        return (await self.session.scalars(query)).all()
+        return list((await self.session.scalars(query)).all())
 
+    async def delete_comment(
+        self,
+        comment_id: str,
+    ) -> None:
+        delete_query = delete(Comment).where(Comment.id == comment_id)
+        await self.session.execute(delete_query)
+        await self.session.commit()
