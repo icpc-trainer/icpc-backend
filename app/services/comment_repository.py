@@ -41,6 +41,29 @@ class CommentRepository:
         )
         return list((await self.session.scalars(query)).all())
 
+    async def get_comment(
+        self,
+        comment_id: str,
+    ) -> Comment | None:
+        query = select(Comment).where(Comment.id == comment_id)
+        return await self.session.scalar(query)
+
+    async def update_comment(
+        self,
+        comment_id: str,
+        content: str,
+    ) -> Comment | None:
+        comment = await self.get_comment(comment_id)
+        if comment is None:
+            return None
+
+        comment.content = content
+        self.session.add(comment)
+        await self.session.commit()
+        await self.session.refresh(comment)
+
+        return comment
+
     async def delete_comment(
         self,
         comment_id: str,

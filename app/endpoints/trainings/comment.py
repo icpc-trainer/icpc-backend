@@ -103,11 +103,50 @@ async def get_problem_comments(
 
 
 @router.delete(
-    "/comments/{comment_id}",
+    "/{training_session_id}/comments/{comment_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_problem_comment(
+    training_session_id: str,
     comment_id: str,
     comment_repository: CommentRepository = Depends(),
 ) -> None:
     await comment_repository.delete_comment(comment_id=comment_id)
+
+    message = WebSocketMessage(
+        type=MessageTypeEnum.PROBLEM_COMMENT_DELETED,
+        payload={"commentId": comment_id},
+    )
+    await training_manager.broadcast(training_session_id, message.json())
+
+
+@router.patch(
+    "/{training_session_id}/comments/{comment_id}",
+    status_code=status.HTTP_200_OK,
+)
+async def update_problem_comment(
+    training_session_id: str,
+    comment_id: str,
+    body: CommentRequest,
+    comment_repository: CommentRepository = Depends(),
+) -> CommentSchema:
+    comment = await comment_repository.update_comment(comment_id=comment_id, content=body.content)
+    if comment is None:
+        raise (HTTPException(status.HTTP_404_NOT_FOUND))
+
+    message = WebSocketMessage(
+        type=MessageTypeEnum.PROBLEM_COMMENT_UPDATED,
+        payload={
+            "id": str(comment.id),
+            "userId": comment.user.external_id,
+            "userFirstName": comment.user.first_name,
+            "userLastName": comment.user.last_name,
+            "userLogin": comment.user.login,
+            "problemAlias": comment.problem_alias,
+            "content": comment.content,
+            "dtCreated": str(comment.dt_created),
+        },
+    )
+    await training_manager.broadcast(training_session_id, message.json())
+
+    return CommentSchema.model_validate_json(json.dumps(message.payload))
