@@ -201,3 +201,14 @@ async def get_compiler(
 ) -> dict:
     compiler = redis_storage_manager.selected_compilers.get(training_session_id, alias)
     return {"compiler": compiler}
+
+
+@router.get(
+    "/{training_session_id}/participation",
+    status_code=status.HTTP_200_OK,
+)
+async def get_information_about_your_participation(
+    training_session_id: str,
+    proxy_manager: ProxyManager = Depends(ProxyManager),
+) -> dict:
+    return await proxy_manager.get_information_about_your_participation(training_session_id)

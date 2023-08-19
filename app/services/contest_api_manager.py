@@ -214,6 +214,18 @@ class ContestApiManager:
             else:
                 return {}, response.status_code
 
+    async def get_information_about_your_participation(self, contest_id: int) -> tuple[dict, int]:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                url=f"{self.get_url()}/contests/{contest_id}/participation",
+                headers={"Authorization": self.authorization},
+            )
+            status_code = response.status_code
+            if status_code == 200:
+                return response.json(), response.status_code
+            else:
+                return {}, response.status_code
+
 
 if __name__ == "__main__":
     # TODO: Move to unit tests
