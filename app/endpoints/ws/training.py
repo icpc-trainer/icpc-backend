@@ -50,6 +50,12 @@ async def handle_message(
             message.payload['problemAlias'],
             message.payload['user'],
         )
+    elif message.type == MessageTypeEnum.COMPILER_SELECTED:
+        redis_storage_manager.selected_compilers.set(
+            training_session_id,
+            message.payload['problemAlias'],
+            message.payload['compiler'],
+        )
 
 
 @router.websocket("/training")

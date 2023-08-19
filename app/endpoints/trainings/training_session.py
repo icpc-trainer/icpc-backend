@@ -129,7 +129,7 @@ async def complete_training_session(
     "/{training_session_id}/code/{alias}",
     status_code=status.HTTP_200_OK,
 )
-async def get_code_from_redis(
+async def get_code(
     training_session_id: UUID,
     alias: str,
     redis_storage_manager: RedisStorageManager = Depends(),
@@ -179,4 +179,14 @@ async def reconnect(
     return TrainingSessionSchema.model_validate(training_session)
 
 
-
+@router.get(
+    "/{training_session_id}/compiler/{alias}",
+    status_code=status.HTTP_200_OK,
+)
+async def get_compiler(
+    training_session_id: UUID,
+    alias: str,
+    redis_storage_manager: RedisStorageManager = Depends(),
+) -> dict:
+    compiler = redis_storage_manager.selected_compilers.get(training_session_id, alias)
+    return {"compiler": compiler}
