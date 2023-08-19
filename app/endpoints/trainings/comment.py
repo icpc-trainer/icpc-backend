@@ -1,28 +1,28 @@
 import json
+
 from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
-from typing import List
 
+from app.db.enums import MessageTypeEnum
+from app.schemas import CommentRequest, CommentSchema
 from app.services import (
-    ProxyManager,
-    UserRepository,
-    TrainingSessionRepository,
     CommentRepository,
+    ProxyManager,
+    TrainingSessionRepository,
+    UserRepository,
     training_manager,
 )
-from app.schemas import CommentSchema, CommentRequest
 from app.utils import WebSocketMessage
-from app.db.enums import MessageTypeEnum
 
 
 router = APIRouter(
     prefix="/training-sessions",
-    tags=["comment"],
+    tags=["Comments"],
 )
 
 
 @router.post(
-    "/{training_session_id}/problem/{problem_alias}/comments/send",
+    "/{training_session_id}/problem/{problem_alias}/comments",
     status_code=status.HTTP_200_OK,
 )
 async def send_problem_comment(
@@ -73,14 +73,14 @@ async def send_problem_comment(
 
 
 @router.get(
-    "/{training_session_id}/problem/{problem_alias}/comments/",
+    "/{training_session_id}/problem/{problem_alias}/comments",
     status_code=status.HTTP_200_OK,
 )
 async def get_problem_comments(
     training_session_id: str,
     problem_alias: str,
     comment_repository: CommentRepository = Depends(),
-) -> List[CommentSchema]:
+) -> list[CommentSchema]:
     comments = await comment_repository.get_comments(
         training_session_id=training_session_id,
         problem_alias=problem_alias,
@@ -100,3 +100,14 @@ async def get_problem_comments(
             )
         )
     return result
+
+
+@router.delete(
+    "/comments/{comment_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_problem_comment(
+    comment_id: str,
+    comment_repository: CommentRepository = Depends(),
+) -> None:
+    await comment_repository.delete_comment(comment_id=comment_id)

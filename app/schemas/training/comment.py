@@ -19,4 +19,3 @@ class CommentSchema(BaseModel):
     problemAlias: str
     content: str
     dtCreated: datetime
-
