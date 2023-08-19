@@ -101,6 +101,21 @@ class SelectedContestManager:
         return contest_id
 
 
+class SelectedCompilerManager:
+    def __init__(self, redis_storage, prefix):
+        self.redis_storage = redis_storage
+        self.prefix = prefix
+
+    def set(self, training_session_id, alias, compiler) -> None:
+        key = f"{self.prefix}:{training_session_id}:{alias}"
+        self.redis_storage.set_value(key, compiler)
+
+    def get(self, training_session_id, alias) -> str:
+        key = f"{self.prefix}:{training_session_id}:{alias}"
+        compiler = self.redis_storage.get_value(key)
+        return compiler
+
+
 class RedisStorageManager:
     def __init__(self):
         self.redis_storage = RedisStorage()
@@ -110,3 +125,4 @@ class RedisStorageManager:
         self.training_users = UsersManager(self.redis_storage, "users:trainings")
         self.assigments = AssigmentManager(self.redis_storage, "assigments")
         self.selected_contests = SelectedContestManager(self.redis_storage, "selected_contests")
+        self.selected_compilers = SelectedCompilerManager(self.redis_storage, "selected_compilers")

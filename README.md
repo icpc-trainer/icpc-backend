@@ -163,3 +163,18 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
     }
 }
 ~~~~
+
+`COMPILER_SELECTED` - изменение компилятора
+
+Этот тип сообщения прослушивается. Сохраняется информация о выбранном компиляторе
+
+Обязательные поля в `payload`: `compiler`, `problemAlias`
+~~~~json
+{
+    "type": "COMPILER_SELECTED",
+    "payload": {
+        "compiler": "python3_docker",
+        "problemAlias": "B",
+    }
+}
+~~~~
