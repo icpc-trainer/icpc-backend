@@ -163,6 +163,17 @@ class ProxyManager:
         result, status_code = await self.contest_api_manager.get_contest_standings(contest_id)
 
         if status_code == 200:
+            # TODO: вынести эту логику отдельно
+            for row in result["rows"]:
+                penalty_sum = 0
+                submissionCount = 0
+                for result in row["problemResults"]:
+                    penalty_sum += result['submitDelay']
+                    submissionCount += int(result['submissionCount'])
+
+                penalty_sum += submissionCount * 600
+
+                row['penalty'] = penalty_sum // 60
             return result
         else:
             raise HTTPException(status_code=status_code)
