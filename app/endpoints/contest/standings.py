@@ -23,12 +23,12 @@ async def get_my_standings(
 
 
 @router.get(
-    "/{contest_id}/standings",
+    "/{training_session_id}/standings",
     status_code=status.HTTP_200_OK,
 )
 async def get_contest_standings(
-    contest_id: int,
+    training_session_id: str,
     proxy_manager: ProxyManager = Depends(ProxyManager),
 ) -> dict:
-    result = await proxy_manager.get_contest_standings(contest_id)
+    result = await proxy_manager.get_contest_standings(training_session_id)
     return result
