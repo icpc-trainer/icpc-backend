@@ -1,3 +1,4 @@
+from isodate import parse_duration
 from fastapi import Depends, HTTPException, UploadFile
 
 from .contest_api_manager import ContestApiManager
@@ -169,6 +170,9 @@ class ProxyManager:
         result, status_code = await self.contest_api_manager.get_information_about_your_participation(contest_id)
 
         if status_code == 200:
+            if result['participantLeftTime']:
+                duration = parse_duration(result['participantLeftTime'])
+                result['participantLeftTime'] = int(duration.total_seconds())
             return result
         else:
             raise HTTPException(status_code=status_code)
