@@ -16,6 +16,7 @@ httpx = "^0.24.1"
 websockets = "^11.0.3"
 redis = "^4.6.0"
 python-multipart = "^0.0.6"
+isodate = "^0.6.1"
 
 
 [tool.poetry.group.dev.dependencies]
