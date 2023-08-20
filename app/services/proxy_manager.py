@@ -154,8 +154,14 @@ class ProxyManager:
         else:
             raise HTTPException(status_code=status_code)
 
-    async def get_contest_standings(self, contest_id: int) -> dict:
+    async def get_contest_standings(self, training_session_id: str) -> dict:
+        training_session = await self.training_session_repository.get_training_session_by_id(
+            training_session_id
+        )
+        contest_id = int(training_session.contest.external_id)
+
         result, status_code = await self.contest_api_manager.get_contest_standings(contest_id)
+
         if status_code == 200:
             return result
         else:
@@ -170,9 +176,8 @@ class ProxyManager:
         result, status_code = await self.contest_api_manager.get_information_about_your_participation(contest_id)
 
         if status_code == 200:
-            if result['participantLeftTime']:
-                duration = parse_duration(result['participantLeftTime'])
-                result['participantLeftTime'] = int(duration.total_seconds())
+            duration = parse_duration(result['participantLeftTime'] or "PT")
+            result['participantLeftTime'] = int(duration.total_seconds())
             return result
         else:
             raise HTTPException(status_code=status_code)
