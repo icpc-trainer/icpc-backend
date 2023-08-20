@@ -167,9 +167,9 @@ class ProxyManager:
             for row in result["rows"]:
                 penalty_sum = 0
                 submissionCount = 0
-                for result in row["problemResults"]:
-                    penalty_sum += result['submitDelay']
-                    submissionCount += int(result['submissionCount'])
+                for problemResult in row["problemResults"]:
+                    penalty_sum += problemResult['submitDelay']
+                    submissionCount += int(problemResult['submissionCount'])
 
                 penalty_sum += submissionCount * 600
 
