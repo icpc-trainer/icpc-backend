@@ -130,8 +130,8 @@ async def complete_training_session(
         type=MessageTypeEnum.TRAINING_FINISHED,
         payload={
             "id": str(training_session.id),
-            "teamId": str(training_session.team_id),
-            "contestId": str(training_session.contest_id),
+            "teamId": str(training_session.team.external_id),
+            "contestId": str(training_session.contest.external_id),
             "status": training_session.status,
         },
     )
