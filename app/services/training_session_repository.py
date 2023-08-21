@@ -116,7 +116,7 @@ class TrainingSessionRepository:
 
         if training_session is None:
             raise HTTPException(
-                status_code=404, detail=f"Сессия не найдена"
+                status_code=404, detail="Сессия не найдена"
             )
         return training_session
 

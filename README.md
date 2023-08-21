@@ -105,7 +105,12 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
 ~~~~json
 {
     "type": "TRAINING_FINISHED",
-    "payload": null
+    "payload": {
+        "id": "0fc88187-cd79-473b-be37-05e2e475abb6",
+        "teamId": "0fc88187-cd79-473b-be37-05e2e475abb6",
+        "contestId": "0fc88187-cd79-473b-be37-05e2e475abb6",
+        "status": "IN_PROCESS",
+    }
 }
 ~~~~
 
@@ -114,7 +119,12 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
 ~~~~json
 {
     "type": "CONTEST_FINISHED",
-    "payload": null
+    "payload": {
+        "id": "0fc88187-cd79-473b-be37-05e2e475abb6",
+        "teamId": "0fc88187-cd79-473b-be37-05e2e475abb6",
+        "contestId": "0fc88187-cd79-473b-be37-05e2e475abb6",
+        "status": "IN_PROCESS",
+    }
 }
 ~~~~
 

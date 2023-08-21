@@ -1,20 +1,20 @@
-from uuid import UUID
 from datetime import timedelta
+from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 
+from app.background_tasks import training_session_finisher
 from app.db.enums import MessageTypeEnum
-from app.schemas import TrainingSessionSchema, TrainingSessionRequest
+from app.schemas import TrainingSessionRequest, TrainingSessionSchema
 from app.services import (
     ProblemStateManager,
-    TrainingSessionRepository,
-    RedisStorageManager,
     ProxyManager,
-    training_manager,
+    RedisStorageManager,
+    TrainingSessionRepository,
     lobby_manager,
+    training_manager,
 )
 from app.utils import WebSocketMessage
-from app.background_tasks import training_session_finisher
 
 
 router = APIRouter(
@@ -128,7 +128,12 @@ async def complete_training_session(
 
     message = WebSocketMessage(
         type=MessageTypeEnum.TRAINING_FINISHED,
-        payload=None,
+        payload={
+            "id": str(training_session.id),
+            "teamId": str(training_session.team_id),
+            "contestId": str(training_session.contest_id),
+            "status": training_session.status,
+        },
     )
 
     await training_manager.broadcast(str(training_session_id), message.json())
