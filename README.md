@@ -109,6 +109,15 @@ ws://localhost:8000/ws/training?training_session_id=04d3f707-ed68-4b2d-a91a-0ae2
 }
 ~~~~
 
+`CONTEST_FINISHED` - отправляется всем когда время контеста истекло
+
+~~~~json
+{
+    "type": "CONTEST_FINISHED",
+    "payload": null
+}
+~~~~
+
 `USER` - информация о пользователе
 
 Этот тип сообщения прослушивается. Сохраняется информация о пользователе
