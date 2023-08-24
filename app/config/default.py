@@ -34,7 +34,7 @@ class DefaultSettings(BaseSettings):
     POSTGRES_PORT: int = int(environ.get("POSTGRES_PORT", 5432))
     POSTGRES_PASSWORD: str = environ.get("POSTGRES_PASSWORD", "changeme")
 
-    REDIS_HOST: str = environ.get("REDIS_HOST", "redis")
+    REDIS_HOST: str = environ.get("REDIS_HOST", "localhost")
     REDIS_PORT: int = int(environ.get("REDIS_PORT", 6379))
     REDIS_PASSWORD: str = environ.get("REDIS_PASSWORD", "changeme")
 
