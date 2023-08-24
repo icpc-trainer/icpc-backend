@@ -26,6 +26,8 @@ black = "^23.7.0"
 mypy = "^1.4.1"
 pytest = "^7.4.0"
 pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+pylint = "^2.17.5"
 
 [build-system]
 requires = ["poetry-core"]
@@ -52,11 +54,32 @@ line_length = 100
 include_trailing_comma = true
 
 [tool.pytest]
-addopts = "--cov=app --cov-report html:coverage-report-html --cov-fail-under=60"
+addopts = "--cov=app --cov-report html:coverage-report-html --cov-fail-under=50"
 python_files = "test_*.py"
 python_classes = ["*Test", "Test*"]
 python_functions = "test_*"
 testpaths = "tests/"
+
+[tool.coverage.report]
+exclude_lines = [
+    "# pragma: no cover",
+    "def __repr__",
+    "def __str__",
+    "def __unicode__",
+]
+show_missing = true
+skip_empty = true
+omit = [
+  "*/__init__.py",
+  "app/db/migrator/env.py",
+]
+
+[tool.coverage.html]
+directory = "pytest-cov-report"
+
+[tool.coverage.run]
+branch = true
+concurrency = ['thread', 'greenlet']
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

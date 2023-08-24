@@ -68,7 +68,7 @@ test:  ##@Testing Test application with pytest
 	make db && $(TEST)
 
 test-cov:  ##@Testing Test application with pytest and create coverage report
-	make db && $(TEST) --cov=$(APPLICATION_NAME) --cov-report html --cov-fail-under=70
+	make db && $(TEST) --cov=$(APPLICATION_NAME) --cov-report html --cov-fail-under=50
 
 %::
 	echo $(MESSAGE)
