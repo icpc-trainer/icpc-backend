@@ -21,6 +21,8 @@ DEV=$(
       - "5432:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data/
+    networks:
+      - icpc-backend
 
   redis:
     container_name: redis
@@ -31,6 +33,8 @@ DEV=$(
     command: [sh, -c, "redis-server --requirepass \$\${REDIS_PASSWORD}"]
     ports:
       - "6379:6379"
+    networks:
+      - icpc-backend
 
   backend:
     container_name: "backend"
@@ -41,9 +45,15 @@ DEV=$(
       - ./.env
     ports:
       - 8000:8000
+    networks:
+      - icpc-backend
 
 volumes:
   postgres-data:
+
+networks:
+  icpc-backend:
+    name: icpc-backend
 EOF
 )
 
@@ -60,6 +70,8 @@ PROD=$(
       - "5432:5432"
     volumes:
       - ../postgres-data:/var/lib/postgresql/data/
+    networks:
+      - icpc-backend
 
   redis:
     container_name: redis
@@ -70,6 +82,8 @@ PROD=$(
     command: [sh, -c, "redis-server --requirepass \$\${REDIS_PASSWORD}"]
     ports:
       - "6379:6379"
+    networks:
+      - icpc-backend
 
   backend:
     container_name: "backend"
@@ -80,9 +94,15 @@ PROD=$(
       - ./.env
     ports:
       - 8000:8000
+    networks:
+      - icpc-backend
 
 volumes:
   postgres-data:
+
+networks:
+  icpc-backend:
+    name: icpc-backend
 EOF
 )
 
