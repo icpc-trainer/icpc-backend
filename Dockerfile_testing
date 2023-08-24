@@ -21,4 +21,4 @@ RUN poetry install
 
 ENTRYPOINT ["/code/boot.sh"]
 
-CMD ["poetry", "run", "pytest", "--verbosity=2", "--showlocals", "--log-level=DEBUG", "--cov=app", "--cov-fail-under=45"]
+CMD ["poetry", "run", "pytest", "--verbosity=2", "--showlocals", "--log-level=DEBUG", "--cov=app", "--cov-fail-under=50"]
