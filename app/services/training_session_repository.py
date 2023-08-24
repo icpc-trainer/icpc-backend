@@ -112,13 +112,7 @@ class TrainingSessionRepository:
             select(TrainingSession).filter_by(contest_id=contest.id, team_id=team.id)
         )
 
-        training_session = training_session_query.scalar_one_or_none()
-
-        if training_session is None:
-            raise HTTPException(
-                status_code=404, detail="Сессия не найдена"
-            )
-        return training_session
+        return training_session_query.scalar_one_or_none()
 
     async def complete_training_session(
         self,
