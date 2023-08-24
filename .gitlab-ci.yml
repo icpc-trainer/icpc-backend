@@ -7,7 +7,7 @@ pytest:
   script:
     - echo "Testing application"
     - docker build -t icpc-backend-testing -f Dockerfile_testing .
-    - docker run --rm icpc-backend-testing
+    - docker run --network=icpc-backend --rm icpc-backend-testing
 
 deploy:
   stage: deploy
