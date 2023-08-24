@@ -160,7 +160,7 @@ class ContestApiManager:
                 if status_code == 201 or status_code == 200:
                     return {"message": response.content.decode()}, response.status_code
                 else:
-                    return {}, response.status_code
+                    return {"message": response.content.decode()}, response.status_code
         except httpx.TimeoutException:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -182,7 +182,7 @@ class ContestApiManager:
                 if status_code == 200:
                     return {"message": response.content.decode()}, response.status_code
                 else:
-                    return {}, response.status_code
+                    return {"message": response.content.decode()}, response.status_code
         except httpx.TimeoutException:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
