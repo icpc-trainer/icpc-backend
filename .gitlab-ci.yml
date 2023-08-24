@@ -5,7 +5,10 @@ stages:
 pytest:
   stage: test
   script:
-    - echo "Tests run here..."
+    - echo "Testing application"
+    - docker build -t icpc-backend-testing -f Dockerfile_testing .
+    - cp .env_example .env
+    - docker run --network=icpc-backend --env-file .env --rm icpc-backend-testing
 
 deploy:
   stage: deploy
