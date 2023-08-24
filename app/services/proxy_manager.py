@@ -138,14 +138,13 @@ class ProxyManager:
         if status_code == 201 or status_code == 200:
             return result
         else:
-            raise HTTPException(status_code=status_code)
-
+            raise HTTPException(status_code=status_code, detail=result)
     async def start_the_contest(self, contest_id: int) -> dict:
         result, status_code = await self.contest_api_manager.start_the_contest(contest_id)
         if status_code == 201 or status_code == 200 or status_code == 409:
             return result
         else:
-            raise HTTPException(status_code=status_code)
+            raise HTTPException(status_code=status_code, detail=result)
 
     async def get_user_teams(self) -> dict:
         result, status_code = await self.contest_api_manager.get_user_teams()
