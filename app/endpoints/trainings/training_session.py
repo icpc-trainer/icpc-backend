@@ -61,7 +61,10 @@ async def create_training_session(
     problem_state_manager: ProblemStateManager = Depends(),
     proxy_manager: ProxyManager = Depends(ProxyManager),
 ) -> TrainingSessionSchema:
-    training_session = await training_session_repository.get_training_session()
+    training_session = await training_session_repository.get_training_session(
+        contest_external_id=body.contest_id,
+        team_external_id=body.team_id,
+    )
 
     if training_session is None:
         # 1. РЕГИСТРАЦИЯ КОМАНДЫ
