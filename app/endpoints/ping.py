@@ -19,6 +19,7 @@ router = APIRouter(
     status_code=status.HTTP_200_OK,
 )
 async def ping_application() -> dict:
+    """Description here"""
     return {"message": "Application worked!"}
 
 
@@ -37,6 +38,7 @@ async def ping_database(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         detail="Database isn't working",
     )
+
 
 @router.get(
     "/ping-redis",
